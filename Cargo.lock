@@ -1950,9 +1950,9 @@ dependencies = [
 
 [[package]]
 name = "toml_edit"
-version = "0.6.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b46c9238346fec3169f99251eda26e918ab71cdf382a660e46076ff1b1b16729"
+checksum = "1a77479ff862cf492f0321d0f58d2d397a0b169c92821ab0f97559b4926dca47"
 dependencies = [
  "combine",
  "indexmap",
