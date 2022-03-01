@@ -53,35 +53,10 @@ pub fn module<'a>(context: &'a Context) -> Option<Module<'a>> {
 
 fn undistract_me<'a, 'b>(
     module: Module<'a>,
-    config: &'b CmdDurationConfig,
-    elapsed: u128,
+    _config: &'b CmdDurationConfig,
+    _elapsed: u128,
 ) -> Module<'a> {
-    use ansi_term::{unstyle, ANSIStrings};
-    use notify_rust::{Notification, Timeout};
-
-    if config.show_notifications && config.min_time_to_notify as u128 <= elapsed {
-        let body = format!(
-            "Command execution {}",
-            unstyle(&ANSIStrings(&module.ansi_strings()))
-        );
-
-        let timeout = match config.notification_timeout {
-            Some(v) => Timeout::Milliseconds(v),
-            None => Timeout::Default,
-        };
-
-        let mut notification = Notification::new();
-        notification
-            .summary("Command finished")
-            .body(&body)
-            .icon("utilities-terminal")
-            .timeout(timeout);
-
-        if let Err(err) = notification.show() {
-            log::trace!("Cannot show notification: {}", err);
-        }
-    }
-
+    log::trace!("Notification support is not enabled");
     module
 }
 
