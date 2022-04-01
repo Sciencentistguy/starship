@@ -1,6 +1,7 @@
 // While adding out new module add out module to src/module.rs ALL_MODULES const array also.
 mod aws;
 mod azure;
+mod buf;
 mod character;
 mod cmake;
 mod cmd_duration;
@@ -26,6 +27,7 @@ mod git_metrics;
 mod git_state;
 mod git_status;
 mod golang;
+mod haskell;
 mod helm;
 mod hg_branch;
 mod hostname;
@@ -90,6 +92,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "azure" => azure::module(context),
             #[cfg(feature = "battery")]
             "battery" => battery::module(context),
+            "buf" => buf::module(context),
             "character" => character::module(context),
             "cmake" => cmake::module(context),
             "cmd_duration" => cmd_duration::module(context),
@@ -113,6 +116,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "git_state" => git_state::module(context),
             "git_status" => git_status::module(context),
             "golang" => golang::module(context),
+            "haskell" => haskell::module(context),
             "helm" => helm::module(context),
             "hg_branch" => hg_branch::module(context),
             "hostname" => hostname::module(context),
@@ -179,6 +183,7 @@ pub fn description(module: &str) -> &'static str {
         "aws" => "The current AWS region and profile",
         "azure" => "The current Azure subscription",
         "battery" => "The current charge of the device's battery and its current charging status",
+        "buf" => "The currently installed version of the Buf CLI",
         "character" => {
             "A character (usually an arrow) beside where the text is entered in your terminal"
         }
@@ -205,6 +210,7 @@ pub fn description(module: &str) -> &'static str {
         "git_state" => "The current git operation, and it's progress",
         "git_status" => "Symbol representing the state of the repo",
         "golang" => "The currently installed version of Golang",
+        "haskell" => "The selected version of the Haskell toolchain",
         "helm" => "The currently installed version of Helm",
         "hg_branch" => "The active branch of the repo in your current directory",
         "hostname" => "The system hostname",

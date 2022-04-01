@@ -1,6 +1,9 @@
 [aws]
 symbol = "  "
 
+[buf]
+symbol = " "
+
 [conda]
 symbol = " "
 
@@ -24,6 +27,9 @@ symbol = " "
 
 [golang]
 symbol = " "
+
+[haskell]
+symbol = " "
 
 [hg_branch]
 symbol = " "

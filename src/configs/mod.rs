@@ -6,6 +6,7 @@ use starship_module_config_derive::ModuleConfig;
 pub mod aws;
 pub mod azure;
 pub mod battery;
+pub mod buf;
 pub mod character;
 pub mod cmake;
 pub mod cmd_duration;
@@ -31,6 +32,7 @@ pub mod git_metrics;
 pub mod git_state;
 pub mod git_status;
 pub mod go;
+pub mod haskell;
 pub mod helm;
 pub mod hg_branch;
 pub mod hostname;
@@ -90,6 +92,7 @@ pub struct FullConfig<'a> {
     aws: aws::AwsConfig<'a>,
     azure: azure::AzureConfig<'a>,
     battery: battery::BatteryConfig<'a>,
+    buf: buf::BufConfig<'a>,
     character: character::CharacterConfig<'a>,
     cmake: cmake::CMakeConfig<'a>,
     cmd_duration: cmd_duration::CmdDurationConfig<'a>,
@@ -114,6 +117,7 @@ pub struct FullConfig<'a> {
     git_state: git_state::GitStateConfig<'a>,
     git_status: git_status::GitStatusConfig<'a>,
     golang: go::GoConfig<'a>,
+    haskell: haskell::HaskellConfig<'a>,
     helm: helm::HelmConfig<'a>,
     hg_branch: hg_branch::HgBranchConfig<'a>,
     hostname: hostname::HostnameConfig<'a>,
@@ -171,6 +175,7 @@ impl<'a> Default for FullConfig<'a> {
             aws: Default::default(),
             azure: Default::default(),
             battery: Default::default(),
+            buf: Default::default(),
             character: Default::default(),
             cmake: Default::default(),
             cmd_duration: Default::default(),
@@ -195,6 +200,7 @@ impl<'a> Default for FullConfig<'a> {
             git_state: Default::default(),
             git_status: Default::default(),
             golang: Default::default(),
+            haskell: Default::default(),
             helm: Default::default(),
             hg_branch: Default::default(),
             hostname: Default::default(),

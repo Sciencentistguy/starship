@@ -129,6 +129,10 @@ pub fn mock_cmd<T: AsRef<OsStr> + Debug, U: AsRef<OsStr> + Debug>(
 ) -> Option<Option<CommandOutput>> {
     let command = display_command(&cmd, args);
     let out = match command.as_str() {
+        "buf --version" => Some(CommandOutput {
+            stdout: String::from("1.0.0"),
+            stderr: String::default(),
+        }),
         "cobc -version" => Some(CommandOutput {
             stdout: String::from("\
 cobc (GnuCOBOL) 3.1.2.0
@@ -181,6 +185,10 @@ Elixir 1.10 (compiled with Erlang/OTP 22)\n",
         }),
         "go version" => Some(CommandOutput {
             stdout: String::from("go version go1.12.1 linux/amd64\n"),
+            stderr: String::default(),
+        }),
+        "ghc --numeric-version" => Some(CommandOutput {
+            stdout: String::from("9.2.1\n"),
             stderr: String::default(),
         }),
         "helm version --short --client" => Some(CommandOutput {
@@ -508,7 +516,7 @@ fn render_time_component((component, suffix): (&u128, &&str)) -> String {
 }
 
 pub fn home_dir() -> Option<PathBuf> {
-    directories_next::BaseDirs::new().map(|base_dirs| base_dirs.home_dir().to_owned())
+    dirs_next::home_dir()
 }
 
 const HEXTABLE: &[char] = &[
