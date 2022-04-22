@@ -698,6 +698,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nix"
+version = "0.24.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8f6d99b651ff9697d6710f9613a07c5b4e0d655040faf56b3b471af108d55597"
+dependencies = [
+ "bitflags",
+ "cfg-if",
+ "libc",
+ "memoffset",
+]
+
+[[package]]
 name = "nom"
 version = "7.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1177,7 +1189,7 @@ dependencies = [
  "local_ipaddress",
  "log",
  "mockall",
- "nix",
+ "nix 0.24.0",
  "once_cell",
  "open",
  "os_info",
@@ -1225,7 +1237,7 @@ dependencies = [
  "lazycell",
  "libc",
  "mach",
- "nix",
+ "nix 0.23.1",
  "num-traits",
  "uom",
  "winapi",
