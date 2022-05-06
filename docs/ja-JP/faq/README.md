@@ -1,4 +1,4 @@
-# FAQ
+# Frequently Asked Questions
 
 ## デモGIFで使用される構成は何ですか？
 
@@ -12,7 +12,7 @@
 
 ## デモのGIFのようにコマンド補完はどうしたら使用できますか？
 
-補完サポート、または自動補完は選択したシェルによって提供されます。 デモ中では、デフォルトの[Fish Shell](https://fishshell.com/)によって補完されています。 Z Shell (zsh) を利用しているのであれば、[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)を照参してください。
+補完サポート、または自動補完は選択したシェルによって提供されます。 デモ中では、デフォルトの[Fish Shell](https://fishshell.com/)によって補完されています。 Z Shell (zsh) を利用しているのであれば、[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)を参照してください。
 
 ## トップレベルの`format`と`<module>.disabled`は同じように動作しますか？
 
@@ -38,7 +38,7 @@ NUM_JOBS=$(jobs -p | wc -l)
 PS1="$(starship prompt --status=$STATUS --jobs=$NUM_JOBS)"
 ```
 
-Starshipに搭載されている[Bashの実装](https://github.com/starship/starship/blob/master/src/init/starship.bash)は、[Command Duration モジュール](https://starship.rs/config/#command-duration)のような高度な機能を可能にするためと、プリインストールされたBashの設定との互換性を確保するために、若干複雑になっています。
+Starshipに組み込まれた[Bashの実装](https://github.com/starship/starship/blob/master/src/init/starship.bash)は、[ Command Durationモジュール](https://starship.rs/config/#command-duration)などの高度な機能を可能にし、Starshipが事前にインストールされたBash構成と互換性があるようにするため、少し複雑です。
 
 `Starshipのプロンプト`で受け入れられるすべてのフラグのリストは、次のコマンドを取得できます。
 

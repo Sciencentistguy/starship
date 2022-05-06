@@ -32,7 +32,7 @@ description: Starship est une invite minimaliste, ultra-rapide et hautement pers
 
 - Une [Nerd Font](https://www.nerdfonts.com/) est installée et activée dans votre terminal.
 
-### Installation rapide
+### Installation
 
 1. Installer le binaire **starship** :
 
@@ -100,7 +100,7 @@ description: Starship est une invite minimaliste, ultra-rapide et hautement pers
 
    #### Powershell
 
-   Ajoutez ce qui suit à la fin de `Microsoft.PowerShell_profile.ps1`. Vous pouvez vérifier l'emplacement de ce fichier en regardant la variable `$PROFILE` dans PowerShell. Habituellement, son chemin est `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` ou `~/.config/powershell/Microsoft.PowerShell_profile.ps1` sur -Nix.
+   Ajouter ce qui suit à la fin de `Microsoft.PowerShell_profile.ps1`. Vous pouvez vérifier l'emplacement de ce fichier en regardant la variable `$PROFILE` dans PowerShell. Habituellement, son chemin est `~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1` ou `~/.config/powershell/Microsoft.PowerShell_profile.ps1` sur -Nix.
 
    ```sh
    Invoke-Expression (&starship init powershell)
@@ -120,7 +120,7 @@ description: Starship est une invite minimaliste, ultra-rapide et hautement pers
 
    #### Elvish
 
-   ::: warning Seul elvish v0.17 ou supérieur est pris en charge. :::
+   ::: warning Seul elvish v0.18 ou supérieur est pris en charge. :::
 
    Ajoutez ce qui suit à la fin de `~/.elvish/rc.elv`:
 
@@ -144,17 +144,19 @@ description: Starship est une invite minimaliste, ultra-rapide et hautement pers
 
    #### Nushell
 
-   ::: warning Cela va changer dans le futur. Seule la version nu v0.33 ou supérieure est prise en charge. Ajoutez ce qui suit à votre fichier de configuration nu. Vous pouvez vérifier l'emplacement de ce fichier en exécutant `config path` dans 'nu'.
-
-   ```toml
-   startup = [
-     "mkdir ~/.cache/starship",
-     "starship init nu | save ~/.cache/starship/init.nu",
-     "source ~/.cache/starship/init.nu",
-   ]
-   prompt = "starship_prompt"
+   ::: warning Cela va changer dans le futur. Seul Nushell v0.60+ est supporté. ::: Exécutez les commandes suivantes:
+   ```sh
+   mkdir ~/.cache/starship
+   starship init nu | save ~/.cache/starship/init.nu
    ```
 
+   Ajoutez le code suivant à la fin de votre configuration Nushell (trouvez-la en exécutant `$nu.config path`):
+
+   ```sh
+   mkdir ~/.cache/starship
+   starship init nu | save ~/.cache/starship/init.nu
+   source ~/.cache/starship/init.nu
+   ```
 
    #### Xonsh
 

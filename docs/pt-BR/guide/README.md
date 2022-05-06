@@ -139,6 +139,8 @@
  /></a>
 </p>
 
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 <h1></h1>
 
 <img
@@ -295,7 +297,7 @@ Adicione o comando a seguir ao final do arquivo `~/.elvish/rc.elv`:
 eval (starship init elvish)
 ```
 
-Nota: Somente o Elvish v0.17 + é suportado
+Nota: Somente Elvish v0.18+ é suportado
 
 </details>
 
@@ -324,16 +326,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Adicione o seguinte no final da sua configuração Nushell (encontre executando o `config path`):
+Run the following:
 
-```toml
-startup = [
-  "mkdir ~/.cache/starship",
-  "starship init nu | save ~/.cache/starship/init.nu",
-  "source ~/.cache/starship/init.nu",
-]
-prompt = "starship_prompt"
+```sh
+mkdir ~/.cache/starship
+starship init nu | save ~/.cache/starship/init.nu
 ```
+
+And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
+
+```sh
+starship init nu | save ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+```
+
+Note: Only Nushell v0.60+ is supported
 
 </details>
 
@@ -393,15 +400,15 @@ Se você estiver procurando personalizar ainda mais a Starship:
 
 ## 🤝 Contribuindo
 
-Nós estamos sempre procurando contribuidores de **todos os níveis de conhecimento**! Se você deseja facilitar seu caminho para o projeto, experimente uma [good first issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue).
+Nós estamos sempre procurando contribuidores de **todos os níveis de conhecimento**! Se você está buscando um caminho mais fácil para começar no projeto, veja essas [boas issues para começar](https://github.com/starship/starship/labels/🌱%20good%20first%20issue).
 
-Se você é fluente em um idioma diferente do inglês, agradecemos qualquer ajuda para manter nossos documentos traduzidos e atualizados em outros idiomas. Se você quiser ajudar, as traduções podem ser contribuídas no [Crowdin do Starship](https://translate.starship.rs/).
+Se você é fluente em uma linguá não inglesa, nos ficaríamos gratos por qualquer ajuda em manter nossas documentações traduzidas e atualizadas em outras linguás. Se você deseja ajudar nas traduções, você pode contribuir no [Crowdin do Starship](https://translate.starship.rs/).
 
-Se você estiver interessado em ajudar a contribuir com starship, dê uma olhada em nosso [Guia de Contribuição](https://github.com/starship/starship/blob/master/CONTRIBUTING.md). Além disso, sinta-se à vontade para entrar no nosso [servidor do Discord](https://discord.gg/8Jzqu3T) e diga oi. 👋
+Se você está interessado em ajudar contribuindo com o projeto, dê uma olhada no nosso [Guia de Contribuição](https://github.com/starship/starship/blob/master/CONTRIBUTING.md). Além disso, sinta-se à vontade para entrar no nosso [servidor no Discord](https://discord.gg/8Jzqu3T) e dizer oi. 👋
 
 ## 💭 Inspirado por
 
-Por favor, confira esses trabalhos anteriores que ajudaram a inspirar a criação do starship. 🙏
+Por favor, confira estes projetos anteriores que ajudaram a inspirar a criação do startship. 🙏
 
 - **[denysdovhan/spaceship-prompt](https://github.com/denysdovhan/spaceship-prompt)** – Um prompt ZSH para astronautas.
 
@@ -416,4 +423,4 @@ Por favor, confira esses trabalhos anteriores que ajudaram a inspirar a criaçã
 
 ## 📝 Licença
 
-Copyright © 2019-presente, [Colaboradores Starship](https://github.com/starship/starship/graphs/contributors).<br /> Este projeto é licenciado pelo [ISC](https://github.com/starship/starship/blob/master/LICENSE).
+Todos os direitos reservados © 2019-Presente, [Contribuidores Starship](https://github.com/starship/starship/graphs/contributors).<br /> Este projeto está licenciado pelo [ISC](https://github.com/starship/starship/blob/master/LICENSE).

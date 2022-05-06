@@ -139,11 +139,13 @@
  /></a>
 </p>
 
+[![Bannière StandWithUkraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 <h1></h1>
 
 <img
   src="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif"
-  alt="Starship avec iTerm2 et le thème Snazzy"
+  alt="Starship dans iTerm2 avec le thème Snazzy"
   width="50%"
   align="right"
  />
@@ -262,7 +264,7 @@ Installez Starship en utilisant l’un de ces gestionnaires de paquets:
 
 ### Étape 2. Configurer votre shell pour Starship
 
-Configurez votre shell pour initialiser starship. Sélectionnez le vôtre dans la liste ci-dessous :
+Configurez votre shell pour initialiser starship. Sélectionnez le vôtre dans la liste ci-dessous:
 
 <details>
 <summary>Bash</summary>
@@ -278,7 +280,7 @@ eval "$(starship init bash)"
 <details>
 <summary>Cmd</summary>
 
-Vous devez utiliser [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) avec Cmd. Créez un fichier avec le chemin `%LocalAppData%\clink\starship.lua` et le contenu suivant:
+Vous devez utiliser [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) avec Cmd. Créez le fichier `%LocalAppData%\clink\starship.lua` avec le contenu suivant:
 
 ```lua
 load(io.popen('starship init cmd'):read("*a"))()
@@ -295,14 +297,14 @@ Ajoutez ce qui suit à la fin de `~/.elvish/rc.elv`:
 eval (starship init elvish)
 ```
 
-Note : Seul Elvish v0.17+ est supporté
+Note : Seul Elvish v0.18+ est supporté
 
 </details>
 
 <details>
 <summary>Fish</summary>
 
-Ajoutez le code suivant à la fin de `~/.config/fish/config.fish`:
+Ajoute ce qui suit à la fin de `~/.config/fish/config.fish`:
 
 ```fish
 starship init fish | source
@@ -324,16 +326,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Ajoutez le code suivant à la fin de votre configuration de Nushell (trouvez-la en exécutant `config path`) :
+Exécutez les commandes suivantes:
 
-```toml
-startup = [
-  "mkdir ~/.cache/starship",
-  "starship init nu | save ~/.cache/starship/init.nu",
-  "source ~/.cache/starship/init.nu",
-]
-prompt = "starship_prompt"
+```sh
+mkdir ~/.cache/starship
+starship init nu | save ~/.cache/starship/init.nu
 ```
+
+Ajoutez le code suivant à la fin de votre configuration Nushell (trouvez-la en exécutant `$nu.config path`):
+
+```sh
+starship init nu | save ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+```
+
+Note: Seul Nushell v0.60+ est supporté
 
 </details>
 
@@ -411,9 +418,9 @@ Jetez un œil aux précédents projets qui ont inspiré la création de starship
 
 <p align="center">
     <br>
-    <img width="100" src="https://raw.githubusercontent.com/starship/starship/master/media/icon.png" alt="Icône de roquette de Starship">
+    <img width="100" src="https://raw.githubusercontent.com/starship/starship/master/media/icon.png" alt="Icône de fusée de Starship">
 </p>
 
 ## 📝 License
 
-Copyright © 2019-présent, [contributeurs de Starship](https://github.com/starship/starship/graphs/contributors).<br /> Ce projet est sous licence [ISC](https://github.com/starship/starship/blob/master/LICENSE).
+Copyright © 2019-présent, [Contributeurs Starship](https://github.com/starship/starship/graphs/contributors).<br /> Ce projet est sous licence [ISC](https://github.com/starship/starship/blob/master/LICENSE).

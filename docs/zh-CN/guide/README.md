@@ -139,6 +139,8 @@
  /></a>
 </p>
 
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 <h1></h1>
 
 <img
@@ -295,7 +297,7 @@ load(io.popen('starship init cmd'):read("*a"))()
 eval (starship init elvish)
 ```
 
-注意：仅支持 v0.17 及以上版本的 Elvish
+注意：仅支持 v0.18 及以上版本的 Elvish
 
 </details>
 
@@ -324,16 +326,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-将以下内容添加到您 Nushell 配置文件的末尾(通过运行 `config path` 来获取配置文件的路径)：
+Run the following:
 
-```toml
-startup = [
-  "mkdir ~/.cache/starship",
-  "starship init nu | save ~/.cache/starship/init.nu",
-  "source ~/.cache/starship/init.nu",
-]
-prompt = "starship_prompt"
+```sh
+mkdir ~/.cache/starship
+starship init nu | save ~/.cache/starship/init.nu
 ```
+
+And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
+
+```sh
+starship init nu | save ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+```
+
+Note: Only Nushell v0.60+ is supported
 
 </details>
 
@@ -381,7 +388,7 @@ eval "$(starship init zsh)"
 
 </details>
 
-### 步骤 3. 配置 StarShip
+### 步骤 3. 配置 Starship
 
 打开一个新的 Shell 实例，你应该就能看到漂亮的 Shell 新提示符了。 如果你对默认配置感到满意，就可以开始享用了！
 
@@ -393,15 +400,15 @@ eval "$(starship init zsh)"
 
 ## 🤝 贡献
 
-我们期待着 **所有技能等级** 的参与者！ 如果你想让自己参与项目的路径轻松一些，可以先试试某个 [good first issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue)。
+我们一直在寻找贡献者！**不论你的技能如何**你都可以参与贡献 。 如果您希望快速为项目作出贡献，请尝试解决 [good first issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue)。
 
-如果你熟练掌握某个非英语语言，我们非常感谢任何帮助翻译与同步文档到其他语言的贡献。 如果你想要帮忙，可以在 [Starship Crowdin](https://translate.starship.rs/) 上参与。
+如果你能流利地使用非英语语种，我们非常感谢你帮助翻译我们的文件并将其更新到其他语言。 如果您想要帮助，可以在 [Starship Crowdin](https://translate.starship.rs/) 上贡献翻译。
 
-如果你有兴趣贡献 Starship 这个项目，请先看看我们的 [贡献指南](https://github.com/starship/starship/blob/master/CONTRIBUTING.md)。 也欢迎加入我们的 [Discord 服务器](https://discord.gg/8Jzqu3T) 和大家打个招呼。 👋
+如果您有兴趣贡献于 Starship，请查看我们的[贡献指南](https://github.com/starship/starship/blob/master/CONTRIBUTING.md)。 另外，你可以自由加入我们的 [Discord 服务器](https://discord.gg/8Jzqu3T) 。 👋
 
 ## 💭该项目受以下项目启发
 
-请看看这些之前的项目，他们启发了 Starship 项目。 🙏
+请参考这些曾经为 Starship 提供启发的工程。 🙏
 
 - **[denysdovhan/spaceship-prompt](https://github.com/denysdovhan/spaceship-prompt)** – A ZSH prompt for astronauts.
 

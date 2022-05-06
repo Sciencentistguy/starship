@@ -13,6 +13,7 @@ pub const ALL_MODULES: &[&str] = &[
     #[cfg(feature = "battery")]
     "battery",
     "buf",
+    "c",
     "character",
     "cmake",
     "cmd_duration",
@@ -69,6 +70,7 @@ pub const ALL_MODULES: &[&str] = &[
     "shell",
     "shlvl",
     "singularity",
+    "spack",
     "status",
     "sudo",
     "swift",

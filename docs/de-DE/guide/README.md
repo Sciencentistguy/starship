@@ -15,7 +15,7 @@
   <a href="https://crates.io/crates/starship"
     ><img
       src="https://img.shields.io/crates/v/starship?style=flat-square"
-      alt="Crates.io-Version"
+      alt="Crates.io Version"
  /></a>
   <a href="https://repology.org/project/starship/versions"
     ><img
@@ -139,16 +139,18 @@
  /></a>
 </p>
 
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 <h1></h1>
 
 <img
   src="https://raw.githubusercontent.com/starship/starship/master/media/demo.gif"
-  alt="Starship mit iTem2 und dem Theme „Snazzy“"
+  alt="Starship mit iTerm2 und dem Snazzy Thema"
   width="50%"
   align="right"
  />
 
-**Der minimalistische, super schnelle und unendlich anpassbare Prompt für jede Shell!**
+**Minimale, super schnelle und unendlich anpassbare Prompt für jede Shell!**
 
 - **Schnell:** sie ist schnell – _sehr, sehr_ schnell! 🚀
 - **Konfigurierbar:** konfiguriere jedes Detail der Prompt.
@@ -169,9 +171,9 @@
 
 - Eine [Nerd Schriftart](https://www.nerdfonts.com/) installiert und im Terminal aktiviert (zum Beispiel [Fira Code Nerd Font](https://www.nerdfonts.com/font-downloads)).
 
-### Step 1. Install Starship
+### Schritt 1. Installiere Starship
 
-Select your operating system from the list below to view installation instructions:
+Wähle dein Betriebssystem aus der Liste für detaillierte Installationsanweisungen:
 
 <details>
 <summary>Android</summary>
@@ -260,14 +262,14 @@ Install Starship using any of the following package managers:
 
 </details>
 
-### Step 2. Setup your shell to use Starship
+### Schritt 2. Richte deine Shell für die Nutzung von Starship ein
 
-Configure your shell to initialize starship. Select yours from the list below:
+Konfigurieren deine Shell um Starship zu initialisieren. Wähle dafür deine Shell aus der Liste aus:
 
 <details>
 <summary>Bash</summary>
 
-Trage folgendes am Ende der `~/.bashrc` ein:
+Füge dies ans Ende von `~/.bashrc`:
 
 ```sh
 eval "$(starship init bash)"
@@ -276,7 +278,7 @@ eval "$(starship init bash)"
 </details>
 
 <details>
-<summary>Cmd</summary>
+<summary>⌘ Cmd</summary>
 
 You need to use [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) with Cmd. Create a file at this path `%LocalAppData%\clink\starship.lua` with the following contents:
 
@@ -295,7 +297,7 @@ Trage folgendes am Ende von `~/.config/fish/rc.elv` ein:
 eval (starship init elvish)
 ```
 
-Note: Only Elvish v0.17+ is supported
+Note: Only Elvish v0.18+ is supported
 
 </details>
 
@@ -324,16 +326,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Add the following to the end of your Nushell configuration (find it by running `config path`):
+Run the following:
 
-```toml
-startup = [
-  "mkdir ~/.cache/starship",
-  "starship init nu | save ~/.cache/starship/init.nu",
-  "source ~/.cache/starship/init.nu",
-]
-prompt = "starship_prompt"
+```sh
+mkdir ~/.cache/starship
+starship init nu | save ~/.cache/starship/init.nu
 ```
+
+And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
+
+```sh
+starship init nu | save ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+```
+
+Note: Only Nushell v0.60+ is supported
 
 </details>
 
@@ -373,7 +380,7 @@ execx($(starship init xonsh))
 <details>
 <summary>Zsh</summary>
 
-Trage folgendes am Ende der `~/.zshrc` ein:
+Füge dies ans Ende von `~/.zshrc`:
 
 ```sh
 eval "$(starship init zsh)"
@@ -381,15 +388,15 @@ eval "$(starship init zsh)"
 
 </details>
 
-### Step 3. Configure Starship
+### Schritt 3. Starship konfigurieren
 
-Start a new shell instance, and you should see your beautiful new shell prompt. If you're happy with the defaults, enjoy!
+Starte eine neue Shell, um deinen neuen und schönen Prompt zu sehen. Wenn du mit den Defaults zufrieden bist, bist du bereits fertig!
 
-If you're looking to further customize Starship:
+Falls du Starship weiter anpassen möchtest:
 
-- **[Configuration](https://starship.rs/config/)** – learn how to configure Starship to tweak your prompt to your liking
+- **[Konfiguration](https://starship.rs/config/)** - Lerne, wie du Starship deinen Bedürfnissen nach anpassen kannst
 
-- **[Presets](https://starship.rs/presets/)** – get inspired by the pre-built configuration of others
+- **[Voreinstellungen](https://starship.rs/presets/)** - lasse dich von vorgefertigter Konfigurationen anderer Benutzenden inspirieren
 
 ## 🤝 Mitwirken
 

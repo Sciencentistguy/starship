@@ -2,7 +2,7 @@
 
 Mientras que Starship es un prompt versátil, a veces necesitas más que editar `starhip.toml` para que haga ciertas cosas. Esta página detalla algunas de las técnicas de configuración más avanzadas en Starship.
 
-::: aviso
+::: warning
 
 Las configuraciones de esta sección están sujetos a cambios en futuras versiones de Starship.
 
@@ -69,7 +69,7 @@ function Invoke-Starship-PreCommand {
 }
 ```
 
-## Cambiar título de la ventana
+## Cambiar el Título de la Ventana
 
 Algunos intérpretes de comandos van a cambiar automáticamente el título de la ventana por ti (p. ej., para mostrar tu directorio actual). Fish incluso lo hace por defecto. Starship no hace esto, pero es bastante sencillo añadir esta funcionalidad a `bash`, `zsh`, `cmd` o `powershell`.
 
@@ -131,7 +131,7 @@ Invoke-Expression (&starship init powershell)
 
 Algunos intérpretes de órdenes soportan un prompt derecho que se renderiza en la misma línea que la entrada. Starship puede establecer el contenido del prompt correcto usando la opción `right_format`. Cualquier módulo que pueda ser usado en `format` también es soportado en `right_format`. La variable `$all` solo contendrá módulos no utilizados explícitamente en `format` o `right_format`.
 
-Nota: El prompt derecho es una sola línea siguiendo la ubicación de entrada. Para alinear módulos arriba de la línea de entrada en un prompt multi-línea, vea el [módulo fill](/config/#fill).
+Nota: El prompt derecho es una sola línea siguiendo la ubicación de entrada. Para alinear los módulos arriba de la línea de entrada en un prompt multi-línea, vea el [módulo `fill`](/config/#fill).
 
 `right_format` está actualmente soportado para los siguientes intérpretes de comandos: elvish, fish, zsh, xonsh, cmd.
 
@@ -176,19 +176,19 @@ Nota: Los prompts de continuación solo están disponibles en los siguientes int
 continuation_prompt = "▶▶"
 ```
 
-## Cadenas de estilo
+## Cadenas de Estilo
 
 Las cadenas de estilo son una lista de palabras, separadas por espacios en blanco. Las palabras no son sensibles a mayúsculas (es decir, `negrita` y `NeGriTa` se consideran la misma cadena). Cada palabra puede ser una de las siguientes:
 
-- `negrita`
-- `cursiva`
-- `subrayado`
-- `atenuado`
-- `invertido`
+- `bold`
+- `italic`
+- `underline`
+- `dimmed`
+- `inverted`
 - `bg:<color>`
 - `fg:<color>`
 - `<color>`
-- `ninguno`
+- `none`
 
 donde `<color>` es un especificador de color (discutido a continuación). `fg:<color>` y `<color>` hacen actualmente lo mismo, aunque esto puede cambiar en el futuro. `inverted` cambia el fondo y los colores de primer plano. El orden de las palabras en la cadena no importa.
 

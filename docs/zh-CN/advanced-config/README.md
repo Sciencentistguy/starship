@@ -32,7 +32,7 @@ end
 load(io.popen('starship init cmd'):read("*a"))()
 ```
 
-## 在 Cmd 中自定义预提示和执行前命令
+## 在 Bash 中自定义预提示和预执行命令
 
 Bash 并没有类似大多数其它 shell 的正式预执行/预命令框架。 因此，很难在 `bash` 中提供完全可自定义的 hook 机制。 然而，Starship 确实能使您有限地在提示符渲染过程中插入自己的函数执行：
 
@@ -131,7 +131,7 @@ Invoke-Expression (&starship init powershell)
 
 一些 Shell 支持右侧提示, 它与输入区渲染在同一行。 Starship 可以设置右侧提示的内容，使用 `right_format` 选项。 Any module that can be used in `format` is also supported in `right_format`. The `$all` variable will only contain modules not explicitly used in either `format` or `right_format`.
 
-Note: The right prompt is a single line following the input location. To right align modules above the input line in a multi-line prompt, see the [fill module](/config/#fill).
+Note: The right prompt is a single line following the input location. To right align modules above the input line in a multi-line prompt, see the [`fill` module](/config/#fill).
 
 `right_format` is currently supported for the following shells: elvish, fish, zsh, xonsh, cmd.
 

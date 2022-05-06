@@ -139,6 +139,8 @@
  /></a>
 </p>
 
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+
 <h1></h1>
 
 <img
@@ -171,12 +173,12 @@
 
 ### Step 1. Install Starship
 
-Select your operating system from the list below to view installation instructions:
+以下のリストからお使いのOSを選択し、インストール方法をご確認ください。
 
 <details>
 <summary>Android</summary>
 
-Install Starship using any of the following package managers:
+以下のいずれかのパッケージマネージャーを使用して、Starshipをインストールします。
 
 | Repository                                                                        | Instructions           |
 | --------------------------------------------------------------------------------- | ---------------------- |
@@ -187,7 +189,7 @@ Install Starship using any of the following package managers:
 <details>
 <summary>BSD</summary>
 
-Install Starship using any of the following package managers:
+以下のいずれかのパッケージマネージャーを使用して、Starshipをインストールします。
 
 | Distribution | Repository                                               | Instructions                      |
 | ------------ | -------------------------------------------------------- | --------------------------------- |
@@ -200,13 +202,13 @@ Install Starship using any of the following package managers:
 <details>
 <summary>Linux</summary>
 
-Install the latest version for your system:
+お使いのシステムに合わせた最新版をインストールしてください。
 
 ```sh
 curl -sS https://starship.rs/install.sh | sh
 ```
 
-Alternatively, install Starship using any of the following package managers:
+または、以下のパッケージマネージャを使用して、Starshipをインストールします。
 
 | Distribution       | Repository                                                                                      | Instructions                                                                   |
 | ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -229,13 +231,13 @@ Alternatively, install Starship using any of the following package managers:
 <details>
 <summary>macOS</summary>
 
-Install the latest version for your system:
+お使いのシステムに合わせた最新版をインストールしてください。
 
 ```sh
 curl -sS https://starship.rs/install.sh | sh
 ```
 
-Alternatively, install Starship using any of the following package managers:
+または、以下のパッケージマネージャを使用して、Starshipをインストールします。
 
 | Repository                                               | Instructions                            |
 | -------------------------------------------------------- | --------------------------------------- |
@@ -249,7 +251,7 @@ Alternatively, install Starship using any of the following package managers:
 <details>
 <summary>Windows</summary>
 
-Install Starship using any of the following package managers:
+以下のいずれかのパッケージマネージャーを使用して、Starshipをインストールします。
 
 | Repository                                                                       | Instructions                            |
 | -------------------------------------------------------------------------------- | --------------------------------------- |
@@ -262,7 +264,7 @@ Install Starship using any of the following package managers:
 
 ### Step 2. Setup your shell to use Starship
 
-Configure your shell to initialize starship. Select yours from the list below:
+Starshipを初期化するためのシェルの設定。 以下のリストからお使いのシェルを選択してください。
 
 <details>
 <summary>Bash</summary>
@@ -278,7 +280,7 @@ eval "$(starship init bash)"
 <details>
 <summary>Cmd</summary>
 
-You need to use [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) with Cmd. Create a file at this path `%LocalAppData%\clink\starship.lua` with the following contents:
+[Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) コマンドを使用する必要があります。 このパス`%LocalAppData%\clink\starship.lua` に以下の内容を含むファイルを作成する。
 
 ```lua
 load(io.popen('starship init cmd'):read("*a"))()
@@ -295,7 +297,7 @@ load(io.popen('starship init cmd'):read("*a"))()
 eval (starship init elvish)
 ```
 
-Note: Only Elvish v0.17+ is supported
+Note: Only Elvish v0.18+ is supported
 
 </details>
 
@@ -324,16 +326,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Add the following to the end of your Nushell configuration (find it by running `config path`):
+Run the following:
 
-```toml
-startup = [
-  "mkdir ~/.cache/starship",
-  "starship init nu | save ~/.cache/starship/init.nu",
-  "source ~/.cache/starship/init.nu",
-]
-prompt = "starship_prompt"
+```sh
+mkdir ~/.cache/starship
+starship init nu | save ~/.cache/starship/init.nu
 ```
+
+そして、Nushellの設定ファイルの最後に以下を追加してください（ `$nu.config-path` を実行してください）。
+
+```sh
+starship init nu | save ~/.cache/starship/init.nu
+source ~/.cache/starship/init.nu
+```
+
+Note: Only Nushell v0.60+ is supported
 
 </details>
 
@@ -383,9 +390,9 @@ eval "$(starship init zsh)"
 
 ### Step 3. Configure Starship
 
-Start a new shell instance, and you should see your beautiful new shell prompt. If you're happy with the defaults, enjoy!
+新しいシェルインスタンスを起動すると、美しくて新しいシェルプロンプトが表示されるはずです。 デフォルトで問題なければ、お楽しみください！
 
-If you're looking to further customize Starship:
+Starshipのさらなるカスタマイズを目指すなら以下を参考にしてみてください。
 
 - **[Configuration](https://starship.rs/config/)** – learn how to configure Starship to tweak your prompt to your liking
 

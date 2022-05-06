@@ -1,7 +1,7 @@
-use crate::config::{RootModuleConfig, StarshipConfig};
+use crate::config::{ModuleConfig, StarshipConfig};
 use crate::configs::StarshipRootConfig;
 use crate::module::Module;
-use crate::utils::{create_command, exec_timeout, CommandOutput};
+use crate::utils::{create_command, exec_timeout, read_file, CommandOutput};
 
 use crate::modules;
 use crate::utils::{self, home_dir};
@@ -334,6 +334,25 @@ impl<'a> Context<'a> {
             &mut cmd,
             Duration::from_millis(self.root_config.command_timeout),
         )
+    }
+
+    /// Attempt to execute several commands with exec_cmd, return the results of the first that works
+    pub fn exec_cmds_return_first(&self, commands: Vec<Vec<&str>>) -> Option<CommandOutput> {
+        commands
+            .iter()
+            .find_map(|attempt| self.exec_cmd(attempt[0], &attempt[1..]))
+    }
+
+    /// Returns the string contents of a file from the current working directory
+    pub fn read_file_from_pwd(&self, file_name: &str) -> Option<String> {
+        if !self.try_begin_scan()?.set_files(&[file_name]).is_match() {
+            log::debug!(
+                "Not attempting to read {file_name} because, it was not found during scan."
+            );
+            return None;
+        }
+
+        read_file(self.current_dir.join(file_name)).ok()
     }
 }
 

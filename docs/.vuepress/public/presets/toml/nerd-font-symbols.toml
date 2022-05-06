@@ -4,6 +4,9 @@ symbol = "  "
 [buf]
 symbol = " "
 
+[c]
+symbol = " "
+
 [conda]
 symbol = " "
 
@@ -54,6 +57,12 @@ symbol = " "
 
 [package]
 symbol = " "
+
+[python]
+symbol = " "
+
+[spack]
+symbol = "🅢 "
 
 [rust]
 symbol = " "

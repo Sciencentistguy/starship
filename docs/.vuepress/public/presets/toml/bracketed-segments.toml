@@ -1,6 +1,9 @@
 [aws]
 format = '\[[$symbol($profile)(\($region\))(\[$duration\])]($style)\]'
 
+[c]
+format = '\[[$symbol($version(-$name))]($style)\]'
+
 [cmake]
 format = '\[[$symbol($version)]($style)\]'
 
@@ -120,6 +123,9 @@ format = '\[[$symbol($version)]($style)\]'
 
 [scala]
 format = '\[[$symbol($version)]($style)\]'
+
+[spack]
+format = '\[[$symbol$environment]($style)\]'
 
 [sudo]
 format = '\[[as $symbol]\]'
