@@ -1687,6 +1687,7 @@ By default the module will be shown if any of the following conditions are met:
 
 - The current directory contains a `go.mod` file
 - The current directory contains a `go.sum` file
+- The current directory contains a `go.work` file
 - The current directory contains a `glide.yaml` file
 - The current directory contains a `Gopkg.yml` file
 - The current directory contains a `Gopkg.lock` file
@@ -1696,16 +1697,16 @@ By default the module will be shown if any of the following conditions are met:
 
 ### Options
 
-| Option              | Default                                                                        | Description                                                               |
-| ------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| `format`            | `"via [$symbol($version )]($style)"`                                           | The format for the module.                                                |
-| `version_format`    | `"v${raw}"`                                                                    | The version format. Available vars are `raw`, `major`, `minor`, & `patch` |
-| `symbol`            | `"🐹 "`                                                                         | A format string representing the symbol of Go.                            |
-| `detect_extensions` | `["go"]`                                                                       | Which extensions should trigger this module.                              |
-| `detect_files`      | `["go.mod", "go.sum", "glide.yaml", "Gopkg.yml", "Gopkg.lock", ".go-version"]` | Which filenames should trigger this module.                               |
-| `detect_folders`    | `["Godeps"]`                                                                   | Which folders should trigger this module.                                 |
-| `style`             | `"bold cyan"`                                                                  | The style for the module.                                                 |
-| `disabled`          | `false`                                                                        | Disables the `golang` module.                                             |
+| Option              | Default                                                                                   | Description                                                               |
+| ------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `format`            | `"via [$symbol($version )]($style)"`                                                      | The format for the module.                                                |
+| `version_format`    | `"v${raw}"`                                                                               | The version format. Available vars are `raw`, `major`, `minor`, & `patch` |
+| `symbol`            | `"🐹 "`                                                                                    | A format string representing the symbol of Go.                            |
+| `detect_extensions` | `["go"]`                                                                                  | Which extensions should trigger this module.                              |
+| `detect_files`      | `["go.mod", "go.sum", "go.work", "glide.yaml", "Gopkg.yml", "Gopkg.lock", ".go-version"]` | Which filenames should trigger this module.                               |
+| `detect_folders`    | `["Godeps"]`                                                                              | Which folders should trigger this module.                                 |
+| `style`             | `"bold cyan"`                                                                             | The style for the module.                                                 |
+| `disabled`          | `false`                                                                                   | Disables the `golang` module.                                             |
 
 ### Variables
 
@@ -1805,20 +1806,22 @@ The `hostname` module shows the system hostname.
 
 ### Options
 
-| Option     | Default                     | Description                                                                                                                          |
-| ---------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `ssh_only` | `true`                      | Only show hostname when connected to an SSH session.                                                                                 |
-| `trim_at`  | `"."`                       | String that the hostname is cut off at, after the first match. `"."` will stop after the first dot. `""` will disable any truncation |
-| `format`   | `"[$hostname]($style) in "` | The format for the module.                                                                                                           |
-| `style`    | `"bold dimmed green"`       | The style for the module.                                                                                                            |
-| `disabled` | `false`                     | Disables the `hostname` module.                                                                                                      |
+| Option       | Default                                | Description                                                                                                                          |
+| ------------ | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `ssh_only`   | `true`                                 | Only show hostname when connected to an SSH session.                                                                                 |
+| `ssh_symbol` | `"🌐 "`                                 | A format string representing the symbol when connected to SSH session.                                                               |
+| `trim_at`    | `"."`                                  | String that the hostname is cut off at, after the first match. `"."` will stop after the first dot. `""` will disable any truncation |
+| `format`     | `"[$ssh_symbol$hostname]($style) in "` | The format for the module.                                                                                                           |
+| `style`      | `"bold dimmed green"`                  | The style for the module.                                                                                                            |
+| `disabled`   | `false`                                | Disables the `hostname` module.                                                                                                      |
 
 ### Variables
 
-| Variable | Example    | Description                         |
-| -------- | ---------- | ----------------------------------- |
-| hostname | `computer` | The hostname of the computer        |
-| style\*  |            | Mirrors the value of option `style` |
+| Variable   | Example    | Description                                           |
+| ---------- | ---------- | ----------------------------------------------------- |
+| hostname   | `computer` | The hostname of the computer                          |
+| style\*    |            | Mirrors the value of option `style`                   |
+| ssh_symbol | `"🌏 "`     | The symbol to represent when connected to SSH session |
 
 *: This variable can only be used as a part of a style string
 
@@ -1829,7 +1832,7 @@ The `hostname` module shows the system hostname.
 
 [hostname]
 ssh_only = false
-format = "on [$hostname](bold red) "
+format = "[$ssh_symbol](bold blue) on [$hostname](bold red) "
 trim_at = ".companyname.com"
 disabled = false
 ```
@@ -2503,7 +2506,7 @@ symbol = "☁️ "
 
 The `package` module is shown when the current directory is the repository for a
 package, and shows its current version. The module currently supports `npm`, `nimble`, `cargo`,
-`poetry`, `composer`, `gradle`, `julia`, `mix`, `helm`, `shards` and `dart` packages.
+`poetry`, `python`, `composer`, `gradle`, `julia`, `mix`, `helm`, `shards` and `dart` packages.
 
 - [**npm**](https://docs.npmjs.com/cli/commands/npm) – The `npm` package version is extracted from the `package.json` present
   in the current directory
@@ -2511,17 +2514,17 @@ package, and shows its current version. The module currently supports `npm`, `ni
 - [**Nimble**](https://github.com/nim-lang/nimble) - The `nimble` package version is extracted from the `*.nimble` file present in the current directory with the `nimble dump` command
 - [**Poetry**](https://python-poetry.org/) – The `poetry` package version is extracted from the `pyproject.toml` present
   in the current directory
-- [**Python**](https://www.python.org) - The `python` package version is extracted from the `setup.cfg` present in the current directory
+- [**Python**](https://www.python.org) - The `python` package version is extracted from a [PEP 621](https://peps.python.org/pep-0621/) compliant `pyproject.toml` or a `setup.cfg` present in the current directory
 - [**Composer**](https://getcomposer.org/) – The `composer` package version is extracted from the `composer.json` present
   in the current directory
-- [**Gradle**](https://gradle.org/) – The `gradle` package version is extracted from the `build.gradle` present
-- [**Julia**](https://docs.julialang.org/en/v1/stdlib/Pkg/) - The package version is extracted from the `Project.toml` present
-- [**Mix**](https://hexdocs.pm/mix/) - The `mix` package version is extracted from the `mix.exs` present
-- [**Helm**](https://helm.sh/docs/helm/helm_package/) - The `helm` chart version is extracted from the `Chart.yaml` present
-- [**Maven**](https://maven.apache.org/) - The `maven` package version is extracted from the `pom.xml` present
-- [**Meson**](https://mesonbuild.com/) - The `meson` package version is extracted from the `meson.build` present
-- [**Shards**](https://crystal-lang.org/reference/the_shards_command/index.html) - The `shards` package version is extracted from the `shard.yml` present
-- [**V**](https://vlang.io) - The `vlang` package version is extracted from the `v.mod` present
+- [**Gradle**](https://gradle.org/) – The `gradle` package version is extracted from the `build.gradle` present in the current directory
+- [**Julia**](https://docs.julialang.org/en/v1/stdlib/Pkg/) - The package version is extracted from the `Project.toml` present in the current directory
+- [**Mix**](https://hexdocs.pm/mix/) - The `mix` package version is extracted from the `mix.exs` present in the current directory
+- [**Helm**](https://helm.sh/docs/helm/helm_package/) - The `helm` chart version is extracted from the `Chart.yaml` present in the current directory
+- [**Maven**](https://maven.apache.org/) - The `maven` package version is extracted from the `pom.xml` present in the current directory
+- [**Meson**](https://mesonbuild.com/) - The `meson` package version is extracted from the `meson.build` present in the current directory
+- [**Shards**](https://crystal-lang.org/reference/the_shards_command/index.html) - The `shards` package version is extracted from the `shard.yml` present in the current directory
+- [**V**](https://vlang.io) - The `vlang` package version is extracted from the `v.mod` present in the current directory
 - [**SBT**](https://scala-sbt.org) - The `sbt` package version is extracted from the `build.sbt` present in the current directory
 - [**Dart**](https://pub.dev/) - The `dart` package version is extracted from the `pubspec.yaml` present in the current directory
 
@@ -2989,11 +2992,13 @@ The module will be shown if any of the following conditions are met:
 
 ### Variables
 
-| Variable | Example           | Description                          |
-| -------- | ----------------- | ------------------------------------ |
-| version  | `v1.43.0-nightly` | The version of `rustc`               |
-| symbol   |                   | Mirrors the value of option `symbol` |
-| style\*  |                   | Mirrors the value of option `style`  |
+| Variable  | Example           | Description                                  |
+| --------- | ----------------- | -------------------------------------------- |
+| version   | `v1.43.0-nightly` | The version of `rustc`                       |
+| numver    | `1.51.0`          | The numeric component of the `rustc` version |
+| toolchain | `beta`            | The toolchain version                        |
+| symbol    |                   | Mirrors the value of option `symbol`         |
+| style\*   |                   | Mirrors the value of option `style`          |
 
 *: This variable can only be used as a part of a style string
 

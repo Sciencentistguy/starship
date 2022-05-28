@@ -1,4 +1,4 @@
-name: Deploy
+name: Release
 on:
   push:
     branches:
@@ -8,6 +8,7 @@ env:
   CARGO_NET_RETRY: 10
   RUST_BACKTRACE: short
   RUSTUP_MAX_RETRIES: 10
+  MACOSX_DEPLOYMENT_TARGET: 10.7
 
 jobs:
   # Update release PR
@@ -116,7 +117,7 @@ jobs:
           tar czvf ../../../${{ matrix.name }} starship
           cd -
 
-      - name: Deploy | Upload artifacts
+      - name: Release | Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.name }}
@@ -125,6 +126,7 @@ jobs:
   # Notarize starship binaries for MacOS and build notarized pkg installers
   notarize_and_pkgbuild:
     runs-on: macos-latest
+    continue-on-error: true
     needs: [github_build, merge_crowdin_pr]
     strategy:
       fail-fast: false
@@ -261,7 +263,7 @@ jobs:
           override: true
 
       - name: Build | Publish
-        run: cargo publish --token ${{ secrets.CRATES_IO_TOKEN }}
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   update_brew_formula:
     name: Update Brew Formula
@@ -269,7 +271,7 @@ jobs:
     needs: release_please
     if: ${{ needs.release_please.outputs.release_created == 'true' }}
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v1.16
+      - uses: mislav/bump-homebrew-formula-action@v2.0
         with:
           formula-name: starship
           tag-name: ${{ needs.release_please.outputs.tag_name }}
@@ -284,7 +286,7 @@ jobs:
     continue-on-error: true
     steps:
       - name: Merge | Merge Crowdin PR
-        run: gh pr merge --squash i18n_master
+        run: gh pr merge i18n_master --squash --repo=starship/starship
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
