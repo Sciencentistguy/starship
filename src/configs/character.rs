@@ -11,6 +11,9 @@ pub struct CharacterConfig<'a> {
     pub vicmd_success_symbol: &'a str,
     pub vicmd_cancel_symbol: &'a str,
     pub vicmd_error_symbol: &'a str,
+    pub vimcmd_visual_symbol: &'a str,
+    pub vimcmd_replace_symbol: &'a str,
+    pub vimcmd_replace_one_symbol: &'a str,
     pub disabled: bool,
 }
 
@@ -24,6 +27,9 @@ impl<'a> Default for CharacterConfig<'a> {
             vicmd_success_symbol: "[❮](bold green)",
             vicmd_cancel_symbol: "[❮](bold yellow)",
             vicmd_error_symbol: "[❮](bold red)",
+            vimcmd_visual_symbol: "[❮](bold yellow)",
+            vimcmd_replace_symbol: "[❮](bold purple)",
+            vimcmd_replace_one_symbol: "[❮](bold purple)",
             disabled: false,
         }
     }
