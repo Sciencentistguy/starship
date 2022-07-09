@@ -48,11 +48,11 @@ pub fn module<'a>(context: &'a Context) -> Option<Module<'a>> {
     let symbol = match mode {
         ShellEditMode::Normal => {
             if exit_success {
-                config.vicmd_success_symbol
+                config.vimcmd_success_symbol
             } else if exit_cancel {
-                config.vicmd_cancel_symbol
+                config.vimcmd_cancel_symbol
             } else {
-                config.vicmd_error_symbol
+                config.vimcmd_error_symbol
             }
         }
         ShellEditMode::Visual => config.vimcmd_visual_symbol,
