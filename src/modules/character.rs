@@ -211,7 +211,7 @@ mod test {
         let actual = ModuleRenderer::new("character")
             .config(toml::toml! {
                 [character]
-                vicmd_success_symbol = "[V](bold green)"
+                vimcmd_success_symbol = "[V](bold green)"
             })
             .shell(Shell::Zsh)
             .keymap("vicmd")
@@ -268,7 +268,7 @@ mod test {
         let actual = ModuleRenderer::new("character")
             .config(toml::toml! {
                 [character]
-                vicmd_success_symbol = "[V](bold green)"
+                vimcmd_success_symbol = "[V](bold green)"
             })
             .shell(Shell::Fish)
             .keymap("default")
@@ -321,9 +321,9 @@ mod test {
         let actual = ModuleRenderer::new("character")
             .config(toml::toml! {
                 [character]
-                vicmd_success_symbol = "[V](bold green)"
-                vicmd_cancel_symbol = "[V](bold yellow)"
-                vicmd_error_symbol = "[V](bold red)"
+                vimcmd_success_symbol = "[V](bold green)"
+                vimcmd_cancel_symbol = "[V](bold yellow)"
+                vimcmd_error_symbol = "[V](bold red)"
             })
             .shell(Shell::Cmd)
             .keymap("vi")
