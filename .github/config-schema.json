@@ -82,6 +82,26 @@
         }
       ]
     },
+    "bun": {
+      "default": {
+        "detect_extensions": [],
+        "detect_files": [
+          "bun.lockb",
+          "bunfig.toml"
+        ],
+        "detect_folders": [],
+        "disabled": false,
+        "format": "via [$symbol($version )]($style)",
+        "style": "bold red",
+        "symbol": "🍞 ",
+        "version_format": "v${raw}"
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/BunConfig"
+        }
+      ]
+    },
     "c": {
       "default": {
         "commands": [
@@ -767,6 +787,9 @@
     "kubernetes": {
       "default": {
         "context_aliases": {},
+        "detect_extensions": [],
+        "detect_files": [],
+        "detect_folders": [],
         "disabled": true,
         "format": "[$symbol$context( \\($namespace\\))]($style) in ",
         "style": "cyan bold",
@@ -1026,6 +1049,7 @@
       "default": {
         "disabled": false,
         "format": "via [$symbol($username@)$stack]($style) ",
+        "search_upwards": true,
         "style": "bold 5",
         "symbol": " ",
         "version_format": "v${raw}"
@@ -1706,6 +1730,55 @@
             "buf.yaml",
             "buf.gen.yaml",
             "buf.work.yaml"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "detect_folders": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "BunConfig": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "default": "via [$symbol($version )]($style)",
+          "type": "string"
+        },
+        "version_format": {
+          "default": "v${raw}",
+          "type": "string"
+        },
+        "symbol": {
+          "default": "🍞 ",
+          "type": "string"
+        },
+        "style": {
+          "default": "bold red",
+          "type": "string"
+        },
+        "disabled": {
+          "default": false,
+          "type": "boolean"
+        },
+        "detect_extensions": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "detect_files": {
+          "default": [
+            "bun.lockb",
+            "bunfig.toml"
           ],
           "type": "array",
           "items": {
@@ -3322,6 +3395,27 @@
           "additionalProperties": {
             "type": "string"
           }
+        },
+        "detect_extensions": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "detect_files": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "detect_folders": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -3830,6 +3924,10 @@
         },
         "disabled": {
           "default": false,
+          "type": "boolean"
+        },
+        "search_upwards": {
+          "default": true,
           "type": "boolean"
         }
       }
@@ -4491,6 +4589,12 @@
         "pipestatus_format": {
           "default": "\\[$pipestatus\\] => [$symbol$common_meaning$signal_name$maybe_int]($style)",
           "type": "string"
+        },
+        "pipestatus_segment_format": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "disabled": {
           "default": true,
