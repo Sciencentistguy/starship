@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Output;
@@ -42,9 +43,8 @@ impl RustToolingEnvironmentInfo {
         }
     }
 
-    fn get_rustup_settings(&self, context: &Context) -> &RustupSettings {
-        self.rustup_settings
-            .get_or_init(|| RustupSettings::load(context).unwrap_or_default())
+    fn get_rustup_settings(&self, _context: &Context) -> &RustupSettings {
+        self.rustup_settings.get_or_init(|| Default::default())
     }
 
     /// Gets any environmental toolchain overrides without downloading cargo toolchains
@@ -208,22 +208,9 @@ pub fn module<'a>(context: &'a Context) -> Option<Module<'a>> {
 fn get_module_version(
     context: &Context,
     config: &RustConfig,
-    rust_env_info: &RustToolingEnvironmentInfo,
+    _rust_env_info: &RustToolingEnvironmentInfo,
 ) -> Option<String> {
-    type Outcome = RustupRunRustcVersionOutcome;
-
-    match rust_env_info.get_rustup_rustc_version(context) {
-        Outcome::RustcVersion(rustc_version) => {
-            format_rustc_version(rustc_version, config.version_format)
-        }
-        Outcome::RustupNotWorking | Outcome::ToolchainUnknown => {
-            // If `rustup` can't be executed, or there is no environmental toolchain, we can
-            // execute `rustc --version` without triggering a toolchain download
-            format_rustc_version(&execute_rustc_version(context)?, config.version_format)
-        }
-        Outcome::ToolchainNotInstalled(name) => Some(name.to_string()),
-        Outcome::Err => None,
-    }
+    format_rustc_version(&execute_rustc_version(context)?, config.version_format)
 }
 
 fn get_module_numeric_version(
@@ -231,19 +218,8 @@ fn get_module_numeric_version(
     _config: &RustConfig,
     rust_env_info: &RustToolingEnvironmentInfo,
 ) -> Option<String> {
-    type Outcome = RustupRunRustcVersionOutcome;
-
-    match rust_env_info.get_rustup_rustc_version(context) {
-        Outcome::RustcVersion(version) => {
-            let release = version.split_whitespace().nth(1).unwrap_or(version);
-            Some(format_semver(release))
-        }
-        Outcome::RustupNotWorking | Outcome::ToolchainUnknown => {
             let (numver, _toolchain) = rust_env_info.get_rustc_verbose_version(context)?;
             Some(numver.to_string())
-        }
-        Outcome::ToolchainNotInstalled(_) | RustupRunRustcVersionOutcome::Err => None,
-    }
 }
 
 fn get_toolchain_version(
@@ -251,7 +227,6 @@ fn get_toolchain_version(
     _config: &RustConfig,
     rust_env_info: &RustToolingEnvironmentInfo,
 ) -> Option<String> {
-    type Outcome = RustupRunRustcVersionOutcome;
 
     let settings_host_triple = rust_env_info
         .get_rustup_settings(context)
@@ -262,21 +237,8 @@ fn get_toolchain_version(
         settings_host_triple
     };
 
-    match rust_env_info.get_rustup_rustc_version(context) {
-        Outcome::RustcVersion(_) | Outcome::ToolchainNotInstalled(_) => {
-            let toolchain_override = rust_env_info
-                .get_env_toolchain_override(context)
-                // This match arm should only trigger if the toolchain override
-                // is not None because of how get_rustup_rustc_version works
-                .expect("Toolchain override was None: programming error.");
-            Some(format_toolchain(toolchain_override, default_host_triple))
-        }
-        Outcome::RustupNotWorking | Outcome::ToolchainUnknown => {
-            let (_numver, toolchain) = rust_env_info.get_rustc_verbose_version(context)?;
-            Some(format_toolchain(toolchain, default_host_triple))
-        }
-        Outcome::Err => None,
-    }
+    let (_numver, toolchain) = rust_env_info.get_rustc_verbose_version(context)?;
+    Some(format_toolchain(toolchain, default_host_triple))
 }
 
 fn env_rustup_toolchain(context: &Context) -> Option<String> {
