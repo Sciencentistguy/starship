@@ -46,6 +46,7 @@ pub mod line_break;
 pub mod localip;
 pub mod lua;
 pub mod memory_usage;
+pub mod meson;
 pub mod nim;
 pub mod nix_shell;
 pub mod nodejs;
@@ -82,7 +83,11 @@ pub mod zig;
 pub use starship_root::*;
 
 #[derive(Serialize, Deserialize, Clone, Default)]
-#[cfg_attr(feature = "config-schema", derive(schemars::JsonSchema))]
+#[cfg_attr(
+    feature = "config-schema",
+    derive(schemars::JsonSchema),
+    schemars(deny_unknown_fields)
+)]
 #[serde(default)]
 pub struct FullConfig<'a> {
     // Meta
@@ -179,6 +184,8 @@ pub struct FullConfig<'a> {
     lua: lua::LuaConfig<'a>,
     #[serde(borrow)]
     memory_usage: memory_usage::MemoryConfig<'a>,
+    #[serde(borrow)]
+    meson: meson::MesonConfig<'a>,
     #[serde(borrow)]
     nim: nim::NimConfig<'a>,
     #[serde(borrow)]

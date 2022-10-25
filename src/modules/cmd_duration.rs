@@ -73,7 +73,7 @@ fn undistract_me<'a, 'b>(
 #[cfg(test)]
 mod tests {
     use crate::test::ModuleRenderer;
-    use ansi_term::Color;
+    use nu_ansi_term::Color;
 
     #[test]
     fn config_blank_duration_1s() {
