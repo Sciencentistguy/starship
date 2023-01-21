@@ -48,13 +48,14 @@ pub fn module<'a>(context: &'a Context) -> Option<Module<'a>> {
         }
     });
 
-    Some(undistract_me(module, &config, elapsed))
+    Some(undistract_me(module, &config, context, elapsed))
 }
 
 #[cfg(not(feature = "notify"))]
 fn undistract_me<'a, 'b>(
     module: Module<'a>,
     _config: &'b CmdDurationConfig,
+    _context: &'a Context,
     _elapsed: u128,
 ) -> Module<'a> {
     module
@@ -64,6 +65,7 @@ fn undistract_me<'a, 'b>(
 fn undistract_me<'a, 'b>(
     module: Module<'a>,
     _config: &'b CmdDurationConfig,
+    _context: &'a Context,
     _elapsed: u128,
 ) -> Module<'a> {
     log::trace!("Notification support is not enabled");
