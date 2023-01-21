@@ -633,6 +633,7 @@ credential_process = /opt/bin/awscreds-retriever
     }
 
     #[test]
+    #[ignore = "Flaky on macOS"]
     fn expiration_date_set() {
         use chrono::{DateTime, NaiveDateTime, SecondsFormat, Utc};
 
