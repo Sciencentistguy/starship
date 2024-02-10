@@ -97,7 +97,13 @@ fn get_aws_profile_and_region(
     context: &Context,
     aws_config: &AwsConfigFile,
 ) -> (Option<Profile>, Option<Region>) {
-    let profile_env_vars = ["AWSU_PROFILE", "AWS_VAULT", "AWSUME_PROFILE", "AWS_PROFILE"];
+    let profile_env_vars = [
+        "AWSU_PROFILE",
+        "AWS_VAULT",
+        "AWSUME_PROFILE",
+        "AWS_PROFILE",
+        "AWS_SSO_PROFILE",
+    ];
     let region_env_vars = ["AWS_REGION", "AWS_DEFAULT_REGION"];
     let profile = profile_env_vars
         .iter()
@@ -415,6 +421,20 @@ mod tests {
     }
 
     #[test]
+    fn profile_set_from_awsssocli() {
+        let actual = ModuleRenderer::new("aws")
+            .env("AWS_SSO_PROFILE", "astronauts-awsssocli")
+            .env("AWS_ACCESS_KEY_ID", "dummy")
+            .collect();
+        let expected = Some(format!(
+            "on {}",
+            Color::Yellow.bold().paint("☁️  astronauts-awsssocli ")
+        ));
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
     fn profile_and_region_set() {
         let actual = ModuleRenderer::new("aws")
             .env("AWS_PROFILE", "astronauts")
@@ -669,7 +689,7 @@ credential_process = /opt/bin/awscreds-retriever
 
         let expiration_env_vars = ["AWS_SESSION_EXPIRATION", "AWS_CREDENTIAL_EXPIRATION"];
         expiration_env_vars.iter().for_each(|env_var| {
-            let now_plus_half_hour: DateTime<Utc> = chrono::DateTime::from_utc(
+            let now_plus_half_hour: DateTime<Utc> = DateTime::from_naive_utc_and_offset(
                 NaiveDateTime::from_timestamp_opt(chrono::Local::now().timestamp() + 1800, 0)
                     .unwrap(),
                 Utc,
@@ -703,7 +723,7 @@ credential_process = /opt/bin/awscreds-retriever
 
         use chrono::{DateTime, NaiveDateTime, Utc};
 
-        let now_plus_half_hour: DateTime<Utc> = chrono::DateTime::from_utc(
+        let now_plus_half_hour: DateTime<Utc> = DateTime::from_naive_utc_and_offset(
             NaiveDateTime::from_timestamp_opt(chrono::Local::now().timestamp() + 1800, 0).unwrap(),
             Utc,
         );
@@ -790,7 +810,7 @@ aws_secret_access_key=dummy
     fn expiration_date_set_expired() {
         use chrono::{DateTime, NaiveDateTime, SecondsFormat, Utc};
 
-        let now: DateTime<Utc> = chrono::DateTime::from_utc(
+        let now: DateTime<Utc> = DateTime::from_naive_utc_and_offset(
             NaiveDateTime::from_timestamp_opt(chrono::Local::now().timestamp() - 1800, 0).unwrap(),
             Utc,
         );
