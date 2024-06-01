@@ -35,7 +35,7 @@
   <a href="https://stand-with-ukraine.pp.ua"
     ><img
       src="https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraineFlat.svg"
-      alt="Stand With Ukraine"
+      alt="Soutenez l'Ukraine"
  /></a>
 </p>
 
@@ -430,10 +430,6 @@ Voyez ces travaux précédents qui ont contribué à inspirer la création de St
 ## ❤️ Collaborateurs
 
 Soutenez ce projet en [devenant un collaborateur](https://github.com/sponsors/starship). Votre nom ou logo apparaîtra ici avec un lien vers votre site Web.
-
-**Palier Collaborateur**
-
-- [Appwrite](https://appwrite.io/)
 
 <p align="center">
     <br>

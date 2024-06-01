@@ -80,6 +80,26 @@ starship init fish | source
 enable_transience
 ```
 
+## TransientPrompt e TransientRightPrompt em Bash
+
+The [Ble.sh](https://github.com/akinomyoga/ble.sh) framework at v0.4 or higher allows you to replace the previous-printed prompt with custom strings. Isso é útil em casos onde nem sempre todas as informações do prompt são necessárias. Para habilitar isso, coloque em `~/.bashrc` `bleopt prompt_ps1_transient=<value>`:
+
+O \<value\> aqui é uma lista separada por dois pontos de `always`, `same-dir` e `trim`. Quando `prompt_ps1_final` está vazio e esta opção tem um valor não-vazio, o prompt especificado pelo `PS1` é apagado ao sair da linha de comando atual. Se o valor contém um campo `trim`, apenas a última linha de multilinha `PS1` é preservada e as outras linhas são apagadas. Caso contrário, a linha de comando será redesenhada como se `PS1=` fosse especificado. Quando um campo `same-dir` está contido no valor e o diretório de trabalho atual difere do diretório final da linha de comando anterior, esta opção `prompt_ps1_transient` é ignorada.
+
+Faça as seguintes alterações no seu `~/.bashrc` para personalizar o que é exibido à esquerda e à direita:
+
+- Para personalizar o que o lado esquerdo do valor de entrada é substituído, configure a opção `prompt_ps1_final` Ble.sh. Por exemplo, para exibir o caractere da `Starship` aqui, você faria
+
+```bash
+bleopt prompt_ps1_final="$(starship module character)"
+```
+
+- Para personalizar o que o lado direito de entrada é substituído, configure a opção `prompt_rps1_final` Ble.sh. Por exemplo, para exibir o momento em que o último comando foi iniciado, você faria
+
+```bash
+bleopt prompt_rps1_final="$(starship module time)"
+```
+
 ## Comandos personalizados de pré-prompt e pré-execução no Cmd
 
 O Clink fornece APIs extremamente flexíveis para executar comandos pré-prompt e pré-execução em Cmd shell. É bastante simples de usar com o Starship. Faça as seguintes alterações no seu arquivo `starship.lua` conforme suas necessidades:
@@ -203,9 +223,11 @@ Invoke-Expression (&starship init powershell)
 
 Alguns shells suportam um prompt direito que é renderizado na mesma linha que a entrada. Starship pode definir o conteúdo do prompt correto usando a opção `right_format`. Qualquer módulo que pode ser usado no `format` também é compatível com `right_format`. A variável `$all` conterá apenas módulos não usado explicitamente em `format` ou `right_format`.
 
-Nota: O prompt direito é uma única linha após o local de entrada. Para alinhar módulos à direita acima da linha de entrada em um prompt de várias linhas, consulte o [módulo `fill`](/config/#fill).
+Nota: O prompt direito é uma única linha após o local de entrada. To right align modules above the input line in a multi-line prompt, see the [`fill` module](../config/#fill).
 
-`right_format` é atualmente suportado pelos seguintes shells: elvish, fish, zsh, xonsh, cmd, nushell.
+`right_format` is currently supported for the following shells: elvish, fish, zsh, xonsh, cmd, nushell, bash.
+
+Note: The [Ble.sh](https://github.com/akinomyoga/ble.sh) framework v0.4 or higher should be installed in order to use right prompt in bash.
 
 ### Exemplo
 

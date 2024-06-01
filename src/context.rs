@@ -38,9 +38,9 @@ pub struct Context<'a> {
     /// The current working directory that starship is being called in.
     pub current_dir: PathBuf,
 
-    /// A logical directory path which should represent the same directory as current_dir,
+    /// A logical directory path which should represent the same directory as `current_dir`,
     /// though may appear different.
-    /// E.g. when navigating to a PSDrive in PowerShell, or a path without symlinks resolved.
+    /// E.g. when navigating to a `PSDrive` in `PowerShell`, or a path without symlinks resolved.
     pub logical_dir: PathBuf,
 
     /// A struct containing directory contents in a lookup-optimized format.
@@ -61,10 +61,10 @@ pub struct Context<'a> {
     /// Width of terminal, or zero if width cannot be detected.
     pub width: usize,
 
-    /// A HashMap of environment variable mocks
+    /// A `HashMap` of environment variable mocks
     pub env: Env<'a>,
 
-    /// A HashMap of command mocks
+    /// A `HashMap` of command mocks
     #[cfg(test)]
     pub cmd: HashMap<&'a str, Option<CommandOutput>>,
 
@@ -339,10 +339,8 @@ impl<'a> Context<'a> {
                 );
 
                 let branch = get_current_branch(&repository);
-                let remote = get_remote_repository_info(
-                    &repository,
-                    branch.as_ref().map(|name| name.as_ref()),
-                );
+                let remote =
+                    get_remote_repository_info(&repository, branch.as_ref().map(AsRef::as_ref));
                 let path = repository.path().to_path_buf();
 
                 let fs_monitor_value_is_true = repository
