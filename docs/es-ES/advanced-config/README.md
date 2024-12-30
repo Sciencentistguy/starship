@@ -84,20 +84,20 @@ enable_transience
 
 The [Ble.sh](https://github.com/akinomyoga/ble.sh) framework at v0.4 or higher allows you to replace the previous-printed prompt with custom strings. Esto es útil en los casos en que la información del prompt no es siempre necesaria. To enable this, put this in `~/.bashrc` `bleopt prompt_ps1_transient=<value>`:
 
-The \<value\> here is a colon-separated list of `always`, `same-dir` and `trim`. When `prompt_ps1_final` is empty and this option has a non-empty value, the prompt specified by `PS1` is erased on leaving the current command line. If the value contains a field `trim`, only the last line of multiline `PS1` is preserved and the other lines are erased. Otherwise, the command line will be redrawn as if `PS1=` is specified. When a field `same-dir` is contained in the value and the current working directory is different from the final directory of the previous command line, this option `prompt_ps1_transient` is ignored.
+The \<value\> here is a colon-separated list of `always`, `same-dir` and `trim`. When `prompt_ps1_final` is empty and the option `prompt_ps1_transient` has a non-empty \<value\>, the prompt specified by `PS1` is erased on leaving the current command line. If \<value\> contains a field `trim`, only the last line of multiline `PS1` is preserved and the other lines are erased. Otherwise, the command line will be redrawn as if `PS1=` is specified. When a field `same-dir` is contained in \<value\> and the current working directory is different from the final directory of the previous command line, this option `prompt_ps1_transient` is ignored.
 
-Make the following changes to your `~/.bashrc` to customize what gets displayed on the left and on the right:
+Make the following changes to your `~/.blerc` (or in `~/.config/blesh/init.sh`) to customize what gets displayed on the left and on the right:
 
 - To customize what the left side of input gets replaced with, configure the `prompt_ps1_final` Ble.sh option. For example, to display Starship's `character` module here, you would do
 
 ```bash
-bleopt prompt_ps1_final="$(starship module character)"
+bleopt prompt_ps1_final='$(starship module character)'
 ```
 
 - To customize what the right side of input gets replaced with, configure the `prompt_rps1_final` Ble.sh option. Por ejemplo, para mostrar la hora en la que se inició el último comando aquí, lo harías
 
 ```bash
-bleopt prompt_rps1_final="$(starship module time)"
+bleopt prompt_rps1_final='$(starship module time)'
 ```
 
 ## Comandos pre-prompt y pre-ejecución personalizados en Cmd
@@ -266,7 +266,7 @@ Nota: Los prompts de continuación solo están disponibles en los siguientes int
 ```toml
 # ~/.config/starship.toml
 
-# Un prompt de continuación que muestra dos flechas rellenas
+# A continuation prompt that displays two filled-in arrows
 continuation_prompt = '▶▶ '
 ```
 
@@ -287,7 +287,7 @@ Las cadenas de estilo son una lista de palabras, separadas por espacios en blanc
 - `<color>`
 - `ninguno`
 
-donde `<color>` es un especificador de color (discutido a continuación). `fg:<color>` y `<color>` hacen actualmente lo mismo, aunque esto puede cambiar en el futuro. `inverted` cambia el fondo y los colores de primer plano. El orden de las palabras en la cadena no importa.
+donde `<color>` es un especificador de color (discutido a continuación). `fg:<color>` y `<color>` hacen actualmente lo mismo, aunque esto puede cambiar en el futuro. `<color>` can also be set to `prev_fg` or `prev_bg` which evaluates to the previous item's foreground or background color respectively if available or `none` otherwise. `inverted` cambia el fondo y los colores de primer plano. El orden de las palabras en la cadena no importa.
 
 El token `none` anula todos los demás tokens en una cadena si no es parte de un especificador `bg:`, de modo que por ejemplo `fg:red none fg:blue` creará una cadena sin ningún estilo. `bg:none` establece el fondo al color por defecto, así que `fg:red bg:none` es equivalente a `red` o `fg:red` y `bg:green fg:red bg:none` también es equivalente a `fg:red` o `red`. Puede convertirse en un error usar `none` junto con otros estilos en el futuro.
 
@@ -301,6 +301,6 @@ Si se especifican varios colores para el primer plano/fondo, el último en la ca
 
 No todas las cadenas de estilo se mostrarán correctamente en cada terminal. En particular, existen las siguientes rarezas conocidas:
 
-- Muchos terminales deshabilitan el soporte para `parpadear` por defecto
+- Muchos terminales deshabilitan el soporte para `parpadear` por defecto.
 - `hiden` no es [compatible con iTerm](https://gitlab.com/gnachman/iterm2/-/issues/4564).
-- `strikethrough` no está soportado por macOS Terminal.app por defecto
+- `strikethrough` no está soportado por macOS Terminal.app por defecto.

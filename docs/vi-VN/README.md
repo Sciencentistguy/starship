@@ -22,8 +22,22 @@ features:
 footer: Cấp phép bởi ISC | Bản quyền © 2019-nay Starship Contributors
 #Used for the description meta tag, for SEO
 metaTitle: "Starship: Cross-Shell Prompt"
-description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biến mạnh mẽ cho bất kì shell nào! Hiển thị thông tin bạn cần, trong khi vẫn giữ cho đẹp và nhỏ gọn. Quick installation available for Bash, Fish, ZSH, Ion, Tcsh, Elvish, Nu, Xonsh, Cmd, and PowerShell.
+description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biến mạnh mẽ cho bất kì shell nào! Hiển thị thông tin bạn cần, trong khi vẫn giữ cho đẹp và nhỏ gọn. Hỗ trợ cài đặt nhanh cho Bash, Fish, ZSH, Ion, Tcsh, Elvish, Nu, Xonsh, Cmd, và PowerShell.
 ---
+
+<script setup>
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.has('uwu') || urlParams.has('kawaii')) {
+    const img = document.querySelector('.VPHero .VPImage.image-src')
+    img.classList.add('uwu')
+    img.src = '/logo-uwu.png'
+    img.alt = 'Kawaii Starship Logo by @sawaratsuki1004'
+  }
+})
+</script>
 
 <video class="demo-video" muted autoplay loop playsinline>
   <source src="/demo.webm" type="video/webm">
@@ -32,7 +46,7 @@ description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biế
 
 ### Yêu cầu
 
-- A [Nerd Font](https://www.nerdfonts.com/) installed and enabled in your terminal.
+- Đã cài đặt một [Nerd Font](https://www.nerdfonts.com/) và được kích hoạt trong terminal của bạn.
 
 ### Cài đặt nhanh chóng
 
@@ -58,7 +72,7 @@ description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biế
    brew install starship
    ```
 
-   With [Winget](https://github.com/microsoft/winget-cli):
+   Với [Winget](https://github.com/microsoft/winget-cli):
 
    ```powershell
    winget install starship
@@ -124,7 +138,7 @@ description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biế
 
    ::: warning
 
-   Only elvish v0.18 or higher is supported.
+   Chỉ hỗ trợ elvish từ phiên bản 0.18 trở lên.
 
    :::
 
@@ -152,7 +166,7 @@ description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biế
 
    ::: warning
 
-   This will change in the future. Only Nushell v0.78+ is supported.
+   Điều này có thể thay đổi trong tương lai. Chỉ hỗ trợ nushell từ phiên bản 0.78 trở lên.
 
    :::
 
@@ -183,7 +197,7 @@ description: Starship là prompt nhỏ, cực nhanh, và khả năng tuỳ biế
 
    #### Cmd
 
-   Bạn cần phải dùng [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) với Cmd. Add the following to a file `starship.lua` and place this file in Clink scripts directory:
+   Bạn cần phải dùng [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) với Cmd. Thêm đoạn mã sau vào tệp tin `starship.lua` và đặt tệp tin này vào địa chỉ Clink scripts:
 
    ```lua
    -- starship.lua
