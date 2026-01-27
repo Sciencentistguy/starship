@@ -136,19 +136,16 @@ onMounted(() => {
 
    #### Elvish
 
-   ::: warning
+   > [!WARNING] Only elvish v0.18 or higher is supported.
 
-   Only elvish v0.18 or higher is supported.
-
-   :::
-
-   `~/.elvish/rc.elv` এর শেষে নিম্নলিখিত লাইন টি যোগ করুন:
+   Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
    ```sh
    # ~/.elvish/rc.elv
 
    eval (starship init elvish)
    ```
+   For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 
    #### Tcsh
@@ -164,23 +161,13 @@ onMounted(() => {
 
    #### Nushell
 
-   ::: warning
+   > [!WARNING] This will change in the future. Only Nushell v0.96+ is supported.
 
-   This will change in the future. Only Nushell v0.78+ is supported.
-
-   :::
-
-   আপনার Nushell env ফাইলের (Nushell এ `$nu.env-path` কমান্ডটি রান করে ফাইলটি খুঁজে বের করুন) শেষে নিম্নলিখিত লাইনগুলি যোগ করুন:
+   Add the following to the end of your Nushell configuration (find it by running `$nu.config-path` in Nushell):
 
    ```sh
-   mkdir ~/.cache/starship
-   starship init nu | save -f ~/.cache/starship/init.nu
-   ```
-
-   এরপর আপনার Nushell কনফিগের (Nushell এ `$nu.config-path` কমান্ডটি রান করে ফাইলটি খুঁজে বের করুন) শেষে নিম্নলিখিত লাইনটি যোগ করুন:
-
-   ```sh
-   use ~/.cache/starship/init.nu
+   mkdir ($nu.data-dir | path join "vendor/autoload")
+   starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
    ```
 
 

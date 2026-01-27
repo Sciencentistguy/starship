@@ -136,19 +136,16 @@ onMounted(() => {
 
    #### Elvish
 
-   ::: warning
+   > [!WARNING] Only elvish v0.18 or higher is supported.
 
-   只有支援 elvish v0.18 或以上版本。
-
-   :::
-
-   將以下內容放到 `~/.elvish/rc.elv` 的結尾：
+   Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
    ```sh
    # ~/.elvish/rc.elv
 
    eval (starship init elvish)
    ```
+   For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 
    #### Tcsh
@@ -164,23 +161,13 @@ onMounted(() => {
 
    #### Nushell
 
-   ::: warning
+   > [!WARNING] This will change in the future. 只有支援 Nushell v0.96+。
 
-   這項設定未來會改變。 只有支援 Nushell v0.78+。
-
-   :::
-
-   新增下列內容至你的 Nushell env 檔案中的最下方（在 Nushell 執行  `$nu.env-path` 找到它）。
+   Add the following to the end of your Nushell configuration (find it by running `$nu.config-path` in Nushell):
 
    ```sh
-   mkdir ~/.cache/starship
-   starship init nu | save -f ~/.cache/starship/init.nu
-   ```
-
-   新增下列的內容至你的 Nushell 設定檔最下方（執行 `$nu.config-path` 找到它）：
-
-   ```sh
-   use ~/.cache/starship/init.nu
+   mkdir ($nu.data-dir | path join "vendor/autoload")
+   starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
    ```
 
 

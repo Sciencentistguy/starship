@@ -1,4 +1,4 @@
-[返回全部预设](./#pure)
+[返回全部预设](./#pure-prompt)
 
 # Pure Preset
 
@@ -12,6 +12,6 @@
 starship preset pure-preset -o ~/.config/starship.toml
 ```
 
-[Click to download TOML](/presets/toml/pure-preset.toml){download}
+[点这下载 TOML](/presets/toml/pure-preset.toml){download}
 
 <<< @/public/presets/toml/pure-preset.toml

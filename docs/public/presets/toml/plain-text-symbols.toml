@@ -1,7 +1,14 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+continuation_prompt = "[.](bright-black) "
+
 [character]
 success_symbol = "[>](bold green)"
 error_symbol = "[x](bold red)"
 vimcmd_symbol = "[<](bold green)"
+vimcmd_visual_symbol = "[<](bold yellow)"
+vimcmd_replace_symbol = "[<](bold purple)"
+vimcmd_replace_one_symbol = "[<](bold purple)"
 
 [git_commit]
 tag_symbol = " tag "
@@ -19,17 +26,33 @@ symbol = "aws "
 [azure]
 symbol = "az "
 
+[battery]
+full_symbol = "full "
+charging_symbol = "charging "
+discharging_symbol = "discharging "
+unknown_symbol = "unknown "
+empty_symbol = "empty "
+
+[buf]
+symbol = "buf "
+
 [bun]
 symbol = "bun "
 
 [c]
 symbol = "C "
 
+[cpp]
+symbol = "C++ "
+
 [cobol]
 symbol = "cobol "
 
 [conda]
 symbol = "conda "
+
+[container]
+symbol = "container "
 
 [crystal]
 symbol = "cr "
@@ -47,6 +70,7 @@ symbol = "dart "
 symbol = "deno "
 
 [dotnet]
+format = "via [$symbol($version )(target $tfm )]($style)"
 symbol = ".NET "
 
 [directory]
@@ -61,17 +85,25 @@ symbol = "exs "
 [elm]
 symbol = "elm "
 
+[erlang]
+symbol = "erl "
+
 [fennel]
 symbol = "fnl "
 
+[fortran]
+symbol = "fortran "
+
 [fossil_branch]
 symbol = "fossil "
+truncation_symbol = "..."
 
 [gcloud]
 symbol = "gcp "
 
 [git_branch]
 symbol = "git "
+truncation_symbol = "..."
 
 [gleam]
 symbol = "gleam "
@@ -85,17 +117,36 @@ symbol = "gradle "
 [guix_shell]
 symbol = "guix "
 
+[haskell]
+symbol = "haskell "
+
+[haxe]
+symbol = "hx "
+
+[helm]
+symbol = "helm "
+
 [hg_branch]
 symbol = "hg "
+truncation_symbol = "..."
+
+[hostname]
+ssh_symbol = "ssh "
 
 [java]
 symbol = "java "
+
+[jobs]
+symbol = "*"
 
 [julia]
 symbol = "jl "
 
 [kotlin]
 symbol = "kt "
+
+[kubernetes]
+symbol = "kubernetes "
 
 [lua]
 symbol = "lua "
@@ -108,9 +159,16 @@ symbol = "memory "
 
 [meson]
 symbol = "meson "
+truncation_symbol = "..."
+
+[mojo]
+symbol = "mojo "
 
 [nats]
 symbol = "nats "
+
+[netns]
+symbol = "netns "
 
 [nim]
 symbol = "nim "
@@ -121,21 +179,32 @@ symbol = "nix "
 [ocaml]
 symbol = "ml "
 
+[odin]
+symbol = "odin "
+
 [opa]
 symbol = "opa "
+
+[openstack]
+symbol = "openstack "
 
 [os.symbols]
 AIX = "aix "
 Alpaquita = "alq "
 AlmaLinux = "alma "
 Alpine = "alp "
+ALTLinux = "alt "
 Amazon = "amz "
 Android = "andr "
+AOSC = "aosc "
 Arch = "rch "
 Artix = "atx "
+Bluefin = "blfn "
+CachyOS = "cach "
 CentOS = "cent "
 Debian = "deb "
 DragonFly = "dfbsd "
+Elementary = "elem "
 Emscripten = "emsc "
 EndeavourOS = "ndev "
 Fedora = "fed "
@@ -144,6 +213,8 @@ Garuda = "garu "
 Gentoo = "gent "
 HardenedBSD = "hbsd "
 Illumos = "lum "
+Ios = "ios "
+InstantOS = "inst "
 Kali = "kali "
 Linux = "lnx "
 Mabox = "mbox "
@@ -154,11 +225,13 @@ MidnightBSD = "mid "
 Mint = "mint "
 NetBSD = "nbsd "
 NixOS = "nix "
+Nobara = "nbra "
 OpenBSD = "obsd "
 OpenCloudOS = "ocos "
 openEuler = "oeul "
 openSUSE = "osuse "
 OracleLinux = "orac "
+PikaOS = "pika "
 Pop = "pop "
 Raspbian = "rasp "
 Redhat = "rhl "
@@ -170,8 +243,10 @@ SUSE = "suse "
 Ubuntu = "ubnt "
 Ultramarine = "ultm "
 Unknown = "unk "
+Uos = "uos "
 Void = "void "
 Windows = "win "
+Zorin = "zorn "
 
 [package]
 symbol = "pkg "
@@ -184,6 +259,10 @@ symbol = "php "
 
 [pijul_channel]
 symbol = "pijul "
+truncation_symbol = "..."
+
+[pixi]
+symbol = "pixi "
 
 [pulumi]
 symbol = "pulumi "
@@ -200,6 +279,12 @@ symbol = "quarto "
 [raku]
 symbol = "raku "
 
+[red]
+symbol = "red "
+
+[rlang]
+symbol = "r "
+
 [ruby]
 symbol = "rb "
 
@@ -209,6 +294,9 @@ symbol = "rs "
 [scala]
 symbol = "scala "
 
+[shlvl]
+symbol = "shlvl "
+
 [spack]
 symbol = "spack "
 
@@ -217,6 +305,10 @@ symbol = "solidity "
 
 [status]
 symbol = "[x](bold red) "
+not_executable_symbol = "noexec"
+not_found_symbol = "notfound"
+sigint_symbol = "sigint"
+signal_symbol = "sig"
 
 [sudo]
 symbol = "sudo "
@@ -227,8 +319,14 @@ symbol = "swift "
 [typst]
 symbol = "typst "
 
+[vagrant]
+symbol = "vagrant "
+
 [terraform]
 symbol = "terraform "
+
+[xmake]
+symbol = "xmake "
 
 [zig]
 symbol = "zig "

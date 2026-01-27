@@ -14,17 +14,13 @@
 
 このプリセットは一部のモジュールで使われるシンボルを変更して、Nerd Font シンボルをどこにも使わないようにします。
 
-::: tip
-
-このプリセットは [Starship の将来のリリース](https://github.com/starship/starship/pull/3544) でデフォルトのプリセットになります。
-
-:::
+> [!TIP] This preset will become the default preset [in a future release of starship](https://github.com/starship/starship/pull/3544).
 
 [No Nerd Font プリセットを表示するにはクリックしてください。](./no-nerd-font)
 
 ## [Bracketed Segments](./bracketed-segments.md)
 
-このプリセットは付属のモジュール全てのフォーマットを変更し、デフォルトのStarshipの表示("via", "on", etc.)から、それぞれの情報を括弧で区分けするように変更します。
+このプリセットは付属のモジュール全てのフォーマットを変更し、デフォルトのStarshipの表示("via", "on", etc.) から、それぞれの情報を括弧で区分けするように変更します。
 
 [![Bracketed Segmentsプリセットのスクリーンショット](/presets/img/bracketed-segments.png "Bracketed Segmentsプリセットを表示するにはクリックしてください")](./bracketed-segments)
 
@@ -75,3 +71,9 @@
 [geometry](https://github.com/geometry-zsh/geometry) と [spaceship](https://github.com/spaceship-prompt/spaceship-prompt) のプロンプトにインスパイアされた擬似ミニマリストプリセットです。
 
 [![Jetpack プリセットのスクリーンショット](/presets/img/jetpack.png "Jetpack プリセットを表示するにはクリックしてください")](./jetpack)
+
+## [Catppuccin Powerline](./catppuccin-powerline.md)
+
+This preset is a minimally modified version of [Gruvbox Rainbow](./gruvbox-rainbow.md) using the [Catppuccin](https://github.com/catppuccin/catppuccin) theme palette.
+
+[![Screenshot of Catppuccin Powerline preset](/presets/img/catppuccin-powerline.png "Click to view Catppuccin Powerline preset")](./catppuccin-powerline)

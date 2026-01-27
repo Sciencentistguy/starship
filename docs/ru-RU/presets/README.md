@@ -14,11 +14,7 @@
 
 Этот пресет изменяет символы для нескольких модулей таким образом, чтобы в приглашении командной строки нигде не использовались символы Nerd Font.
 
-::: tip
-
-Этот пресет станет пресетом по умолчанию [в будущем релизе starship](https://github.com/starship/starship/pull/3544).
-
-:::
+> [!TIP] This preset will become the default preset [in a future release of starship](https://github.com/starship/starship/pull/3544).
 
 [Нажмите, чтобы просмотреть пресет No Nerd Font](./no-nerd-font)
 
@@ -74,4 +70,10 @@
 
 Это псевдоминималистичный пресет, вдохновленный приглашениями командной оболочки [geometry](https://github.com/geometry-zsh/geometry) и [spaceship](https://github.com/spaceship-prompt/spaceship-prompt).
 
-[![Скриншот пресета Jetpack](/presets/img/jetpack.png "Click to view Jetpack preset")](./jetpack)
+[![Скриншот пресета Jetpack](/presets/img/jetpack.png "Нажмите, чтобы просмотреть пресет Jetpack")](./jetpack)
+
+## [Catppuccin Powerline](./catppuccin-powerline.md)
+
+This preset is a minimally modified version of [Gruvbox Rainbow](./gruvbox-rainbow.md) using the [Catppuccin](https://github.com/catppuccin/catppuccin) theme palette.
+
+[![Screenshot of Catppuccin Powerline preset](/presets/img/catppuccin-powerline.png "Click to view Catppuccin Powerline preset")](./catppuccin-powerline)

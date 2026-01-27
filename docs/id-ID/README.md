@@ -136,19 +136,16 @@ onMounted(() => {
 
    #### Elvish
 
-   ::: warning
+   > [!WARNING] Only elvish v0.18 or higher is supported.
 
-   Hanya elvish v0.18 atau versi yang lebih baru yang mendapat dukungan pengembangan.
-
-   :::
-
-   Tambahkan skrip berikut pada baris akhir `~/.elvish/rc.elv`:
+   Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
    ```sh
    # ~/.elvish/rc.elv
 
    eval (starship init elvish)
    ```
+   For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 
    #### Tcsh
@@ -164,23 +161,13 @@ onMounted(() => {
 
    #### Nushell
 
-   ::: warning
+   > [!WARNING] This will change in the future. Hanya Nushell v0.96+ yang menerima dukungan.
 
-   Hal ini dapat berubah di kemudian hari. Hanya Nushell v0.78+ yang menerima dukungan.
-
-   :::
-
-   Tambahkan baris berikut di akhir env file Nushell anda (dengan menjalankan `$nu.env-path` di Nushell):
+   Add the following to the end of your Nushell configuration (find it by running `$nu.config-path` in Nushell):
 
    ```sh
-   mkdir ~/.cache/starship
-   starship init nu | save -f ~/.cache/starship/init.nu
-   ```
-
-   Lalu tambahkan baris berikut di baris terakhir konfigurasi Nushell (temukan dengan menjalankan `$nu.config-path`):
-
-   ```sh
-   use ~/.cache/starship/init.nu
+   mkdir ($nu.data-dir | path join "vendor/autoload")
+   starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
    ```
 
 

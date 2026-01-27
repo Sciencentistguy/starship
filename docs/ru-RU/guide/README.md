@@ -229,10 +229,13 @@ curl -sS https://starship.rs/install.sh | sh
 | Alpine Linux 3.13+ | [Alpine Linux Packages](https://pkgs.alpinelinux.org/packages?name=starship)                    | `apk add starship`                                                             |
 | Arch Linux         | [Arch Linux Extra](https://archlinux.org/packages/extra/x86_64/starship)                        | `pacman -S starship`                                                           |
 | CentOS 7+          | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                   | `dnf copr enable atim/starship` <br /> `dnf install starship` |
+| Debian 13+         | [Debian Main](https://sources.debian.org/src/starship/1.22.1-1/)                                | `apt install starship`                                                         |
+| Fedora 40+         | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                   | `dnf copr enable atim/starship` <br /> `dnf install starship` |
 | Gentoo             | [Gentoo Packages](https://packages.gentoo.org/packages/app-shells/starship)                     | `emerge app-shells/starship`                                                   |
 | Manjaro            |                                                                                                 | `pacman -S starship`                                                           |
-| NixOS              | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/misc/starship/default.nix)    | `nix-env -iA nixpkgs.starship`                                                 |
+| NixOS              | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/st/starship/package.nix)    | `nix-env -iA nixpkgs.starship`                                                 |
 | openSUSE           | [OSS](https://software.opensuse.org/package/starship)                                           | `zypper in starship`                                                           |
+| Ubuntu 25.04+      | [Ubuntu Universe](https://packages.ubuntu.com/source/plucky/starship)                           | `apt install starship`                                                         |
 | Void Linux         | [Void Linux Packages](https://github.com/void-linux/void-packages/tree/master/srcpkgs/starship) | `xbps-install -S starship`                                                     |
 
 </details>
@@ -260,7 +263,7 @@ curl -sS https://starship.rs/install.sh | sh
 <details>
 <summary>Windows</summary>
 
-Install the latest version for your system with the MSI-installers from the [releases section](https://github.com/starship/starship/releases/latest).
+Установите последнюю версию для вашей системы с помощью MSI-installers из [раздела релизов](https://github.com/starship/starship/releases/latest).
 
 Установите Starship с помощью любого из следующих менеджеров пакетов:
 
@@ -303,13 +306,13 @@ load(io.popen('starship init cmd'):read("*a"))()
 <details>
 <summary>Elvish</summary>
 
-Добавьте следующую строку в конец `~/.elvish/rc.elv`:
+Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
 ```sh
 eval (starship init elvish)
 ```
 
-Примечание: поддерживается только Elvish v0.18+
+Note: Only Elvish v0.18+ is supported. For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 </details>
 
@@ -330,7 +333,7 @@ starship init fish | source
 Добавьте следующее в конец `~/.config/ion/initrc`:
 
 ```sh
-eval $(starship init ion)
+eval $(starhip init ion)
 ```
 
 </details>
@@ -338,27 +341,21 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Add the following to the end of your Nushell env file (find it by running `$nu.env-path` in Nushell):
+Добавьте следующее в конец вашей конфигурации Nushell (найдите это, запустив `$nu.config-path` в Nushell):
 
 ```sh
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 ```
 
-And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
-
-```sh
-use ~/.cache/starship/init.nu
-```
-
-Note: Only Nushell v0.78+ is supported
+Примечание: Поддерживается только Nushell v0.96+
 
 </details>
 
 <details>
 <summary>PowerShell</summary>
 
-Add the following to the end of your PowerShell configuration (find it by running `$PROFILE`):
+Добавьте следующее в конец вашей конфигурации PowerShell (найдите его, запустив `$PROFILE`):
 
 ```powershell
 Invoke-Expression (&starship init powershell)
@@ -411,7 +408,7 @@ eval "$(starship init zsh)"
 
 ## 🤝 Помощь
 
-Мы всегда ищем помощь людей **всех уровней навыков**! Если вы хотите облегчить свой путь к проекту, посмотрите хорошие первые ошибки ([first good issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue)).
+Мы всегда ищем помощь людей **всех уровней навыков**! If you're looking to ease your way into the project, try out a [good first issue](https://github.com/starship/starship/labels/"🌱%20good%20first%20issue").
 
 Если Вы свободно владеете иностранным языком отличным от английского, мы высоко оценим любую помощь в переводе нашей документации на другие языки и поддержании ее в актуальном состоянии. Если вы хотите помочь, переводы могут быть сделаны на платформе [Starship Crowdin](https://translate.starship.rs/).
 
@@ -423,24 +420,24 @@ eval "$(starship init zsh)"
 
 - **[denysdovhan/spaceship-prompt](https://github.com/denysdovhan/spaceship-prompt)** – ZSH промпт для космонавтов.
 
-- **[denysdovhan/robbyrussell-node](https://github.com/denysdovhan/robbyrussell-node)** – Cross-shell robbyrussell theme written in JavaScript.
+- **[denysdovhan/robbyrussell-node](https://github.com/denysdovhan/robbyrussell-node)** – Кросс-оболочка тема robbyrussell написанная на JavaScript.
 
-- **[reujab/silver](https://github.com/reujab/silver)** – A cross-shell customizable powerline-like prompt with icons.
+- **[reujab/silver](https://github.com/reujab/silver)** – Кросс-оболочка командной строки настраиваемая как мощная строка с иконками.
 
 ## ❤️ Спонсоры
 
 Поддержите этот проект, [став спонсором](https://github.com/sponsors/starship). Ваше имя или логотип будут отображаться здесь со ссылкой на ваш сайт.
 
-## 🔒 Code Signing Policy
+## 🔒 Политика подписания кода
 
-Free code signing provided by [SignPath.io](https://signpath.io), certificate by [SignPath Foundation](https://signpath.org).
+Бесплатная подпись кода, предоставляемая  [SignPath.io](https://signpath.io), сертификат от [SignPath Foundation](https://signpath.org).
 
-Code Signing Roles:
+Роли подписания кодов:
 
-- Reviewers: [Astronauts](https://github.com/orgs/starship/teams/astronauts)
-- Approvers and Authors: [Mission Control](https://github.com/orgs/starship/teams/mission-control)
+- Рецензенты: [Астронавты](https://github.com/orgs/starship/teams/astronauts)
+- Утверждающие лица и авторы: [Контролирующие миссию](https://github.com/orgs/starship/teams/mission-control)
 
-This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+Эта программа не будет передавать какую-либо информацию в другие сетевые системы без специального запроса пользователя или лица, устанавливающего или эксплуатирующего ее.
 
 <p align="center">
     <br>

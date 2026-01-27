@@ -1,11 +1,11 @@
 [package]
 name = "starship"
-version = "1.21.1"
+version = "1.24.2"
 authors = ["Starship Contributors"]
 build = "build.rs"
 categories = ["command-line-utilities"]
 documentation = "https://starship.rs/guide/"
-edition = "2021"
+edition = "2024"
 homepage = "https://starship.rs"
 # Keep `/` in front of `README.md` to exclude localized readmes
 include = [
@@ -23,78 +23,74 @@ license = "ISC"
 readme = "README.md"
 repository = "https://github.com/starship/starship"
 # Note: MSRV is only intended as a hint, and only the latest version is officially supported in starship.
-rust-version = "1.80"
+rust-version = "1.90"
 description = """
 The minimal, blazing-fast, and infinitely customizable prompt for any shell! ☄🌌️
 """
 
 [features]
-default = ["battery", "notify", "gix-max-perf"]
+default = ["battery", "notify"]
 battery = ["starship-battery"]
 config-schema = ["schemars"]
 notify = ["notify-rust"]
 
-# Enables most of the `max-performance` features of the `gix` module for better performance.
-# This can be more difficult to build in some conditions and requires cmake.
-gix-max-perf = ["gix-features/zlib-ng", "gix/fast-sha1"]
-# Slower than `git-repository-max-perf`, but better than the default.
-# Unlike `git-repository-max-perf` this does not require cmake and allows dynamic zlib linking.
-gix-faster = ["gix-features/zlib-stock", "gix/fast-sha1"]
-
 [dependencies]
-chrono = { version = "0.4.38", default-features = false, features = ["clock", "std", "wasmbind"] }
-clap = { version = "4.5.20", features = ["derive", "cargo", "unicode"] }
-clap_complete = "4.5.33"
-dirs = "5.0.1"
+chrono = { version = "0.4.42", default-features = false, features = ["clock", "std", "wasmbind"] }
+clap = { version = "4.5.53", features = ["derive", "cargo", "unicode"] }
+clap_complete = "4.5.63"
+clap_complete_nushell = "4.5.10"
+dirs = "6.0.0"
 dunce = "1.0.5"
 # default feature restriction addresses https://github.com/starship/starship/issues/4251
-gix = { version = "0.66.0", default-features = false, features = ["max-performance-safe", "revision"] }
-gix-features = { version = "0.38.2", optional = true }
-indexmap = { version = "2.6.0", features = ["serde"] }
-log = { version = "0.4.22", features = ["std"] }
+gix = { version = "0.76.0", default-features = false, features = ["max-performance-safe", "revision", "zlib-rs", "status"] }
+indexmap = { version = "2.12.1", features = ["serde"] }
+jsonc-parser = { version = "0.28.0", features = ["serde"] }
+log = { version = "0.4.29", features = ["std"] }
 # notify-rust is optional (on by default) because the crate doesn't currently build for darwin with nix
 # see: https://github.com/NixOS/nixpkgs/issues/160876
-notify-rust = { version = "4.11.3", optional = true }
-nu-ansi-term = "0.50.1"
-open = "5.3.0"
+notify-rust = { version = "4.11.7", optional = true }
+nu-ansi-term = "0.50.3"
+open = "5.3.3"
 # update os module config and tests when upgrading os_info
-os_info = "3.8.2"
+os_info = { version = "3.14.0", features = ["schemars"] }
+# for efficient shared state between `git_status` and `git_metrics`, allowing parallel printing. This is for poison-free locks.
+parking_lot = "0.12.5"
 path-slash = "0.2.1"
-pest = "2.7.14"
-pest_derive = "2.7.14"
-process_control = "5.0.0"
-quick-xml = "0.36.2"
-rand = "0.8.5"
-rayon = "1.10.0"
-regex = { version = "1.11.0", default-features = false, features = ["perf", "std", "unicode-perl"] }
-rust-ini = "0.21.1"
-semver = "1.0.23"
-serde = { version = "1.0.210", features = ["derive"] }
-serde_json = "1.0.129"
+pest = "2.8.4"
+pest_derive = "2.8.4"
+process_control = "5.2.0"
+quick-xml = "0.38.4"
+rand = "0.9.2"
+rayon = "1.11.0"
+regex = { version = "1.12.2", default-features = false, features = ["perf", "std", "unicode-perl"] }
+rust-ini = "0.21.3"
+semver = "1.0.27"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.148"
 sha1 = "0.10.6"
-shadow-rs = { version = "0.35.1", default-features = false }
+shadow-rs = { version = "1.5.0", default-features = false, features = ["build"] }
 # battery is optional (on by default) because the crate doesn't currently build for Termux
 # see: https://github.com/svartalf/rust-battery/issues/33
-starship-battery = { version = "0.10.0", optional = true }
+starship-battery = { version = "0.10.3", optional = true }
 strsim = "0.11.1"
-systemstat = "=0.2.3"
-terminal_size = "0.4.0"
-toml = { version = "0.8.19", features = ["preserve_order"] }
-toml_edit = "0.22.22"
+systemstat = "=0.2.5"
+terminal_size = "0.4.3"
+toml = { version = "0.9.10", features = ["preserve_order"] }
+toml_edit = "0.24.0"
 unicode-segmentation = "1.12.0"
-unicode-width = "0.2.0"
+unicode-width = "0.2.2"
 urlencoding = "2.1.3"
-versions = "6.3.2"
-which = "6.0.3"
-whoami = { version = "1.5.2", default-features = false }
-yaml-rust2 = "0.9.0"
+versions = "7.0.0"
+which = "8.0.0"
+whoami = { version = "1.6.1", default-features = false }
+yaml-rust2 = "0.11.0"
 
-guess_host_triple = "0.1.4"
-home = "0.5.9"
-shell-words = "1.1.0"
+guess_host_triple = "0.1.5"
+home = "0.5.12"
+shell-words = "1.1.1"
 
 [dependencies.schemars]
-version = "0.8.21"
+version = "1.2.0"
 optional = true
 features = ["preserve_order", "indexmap2"]
 
@@ -102,7 +98,7 @@ features = ["preserve_order", "indexmap2"]
 deelevate = "0.2.0"
 
 [target.'cfg(windows)'.dependencies.windows]
-version = "0.58.0"
+version = "0.62.2"
 features = [
   "Win32_Foundation",
   "Win32_UI_Shell",
@@ -112,22 +108,26 @@ features = [
 ]
 
 [target.'cfg(not(windows))'.dependencies]
-nix = { version = "0.29.0", default-features = false, features = ["feature", "fs", "user"] }
+nix = { version = "0.30.1", default-features = false, features = ["feature", "fs", "user"] }
 
 [build-dependencies]
-shadow-rs = { version = "0.35.1", default-features = false }
+shadow-rs = { version = "1.5.0", default-features = false, features = ["build"] }
 dunce = "1.0.5"
 
 [target.'cfg(windows)'.build-dependencies]
 winres = "0.1.12"
 
 [dev-dependencies]
-mockall = "0.13.0"
-tempfile = "3.13.0"
+mockall = "0.14.0"
+tempfile = "3.24.0"
 
 [profile.release]
 lto = "thin"
 
-[[bin]]
-name = "starship"
-path = "src/main.rs"
+[profile.bench]
+codegen-units = 16
+lto = "thin"
+strip = false
+
+[lints.clippy]
+use_self = "warn"

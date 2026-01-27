@@ -14,11 +14,7 @@
 
 Цей стиль змінює символи для кількох модулів, щоб жодні символи Nerd Font не використовувалися в командному рядку.
 
-::: tip
-
-Цей шаблон стане стандартним в [майбутньому випуску starship](https://github.com/starship/starship/pull/3544).
-
-:::
+> [!TIP] Цей шаблон стане стандартним [у наступних випусках starship](https://github.com/starship/starship/pull/3544).
 
 [Натисніть для перегляду шаблона No Nerd Font](./no-nerd-font)
 
@@ -75,3 +71,9 @@
 Цей псевдомінімалістичний шаблон створений під враженням від [geometry](https://github.com/geometry-zsh/geometry) та [spaceship](https://github.com/spaceship-prompt/spaceship-prompt).
 
 [![Скріншот шаблона Jetpack](/presets/img/jetpack.png "Натисніть для перегляду шаблона  Jetpack")](./jetpack)
+
+## [Catppuccin Powerline](./catppuccin-powerline.md)
+
+Цей шаблон є трохи зміненою версією [Gruvbox Rainbow](./gruvbox-rainbow.md), що використовує палітру [Catppuccin](https://github.com/catppuccin/catppuccin).
+
+[![Скріншот шаблона Catppuccin Powerline](/presets/img/catppuccin-powerline.png "Натисніть, щоб переглянути шаблон Catppucin Powerline")](./catppuccin-powerline)

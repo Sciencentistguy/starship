@@ -1,5 +1,5 @@
-use super::string_formatter::StringFormatterError;
 use super::StringFormatter;
+use super::string_formatter::StringFormatterError;
 use crate::segment;
 use std::ops::Deref;
 use std::sync::LazyLock;
@@ -70,7 +70,7 @@ impl<'a> VersionFormatter<'a> {
         match VersionFormatter::format_version(version, version_format) {
             Ok(formatted) => Some(formatted),
             Err(error) => {
-                log::warn!("Error formatting `{}` version:\n{}", module_name, error);
+                log::warn!("Error formatting `{module_name}` version:\n{error}");
                 Some(format!("v{version}"))
             }
         }

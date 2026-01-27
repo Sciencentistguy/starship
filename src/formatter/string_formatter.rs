@@ -5,12 +5,12 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 use std::fmt;
 
-use crate::config::{parse_style_string, Style};
+use crate::config::{Style, parse_style_string};
 use crate::context::{Context, Shell};
 use crate::segment::Segment;
 
 use super::model::*;
-use super::parser::{parse, Rule};
+use super::parser::{Rule, parse};
 
 #[derive(Clone)]
 enum VariableValue<'a> {
@@ -20,9 +20,9 @@ enum VariableValue<'a> {
     Meta(Vec<FormatElement<'a>>),
 }
 
-impl<'a> Default for VariableValue<'a> {
+impl Default for VariableValue<'_> {
     fn default() -> Self {
-        VariableValue::Plain(Cow::Borrowed(""))
+        Self::Plain(Cow::Borrowed(""))
     }
 }
 
@@ -352,13 +352,13 @@ impl<'a> StringFormatter<'a> {
                                     variables
                                         .get(var.as_ref())
                                         // false if can't find the variable in format string
-                                        .map_or(false, |map_result| {
+                                        .is_some_and(|map_result| {
                                             let map_result = map_result.as_ref();
                                             map_result
                                                 .and_then(|result| result.as_ref().ok())
                                                 // false if the variable is None or Err, or a meta variable
                                                 // that shouldn't show
-                                                .map_or(false, |result| match result {
+                                                .is_some_and(|result| match result {
                                                     // If the variable is a meta variable, also
                                                     // check the format string inside it.
                                                     VariableValue::Meta(meta_elements) => {
@@ -407,13 +407,13 @@ impl<'a> StringFormatter<'a> {
     }
 }
 
-impl<'a> VariableHolder<String> for StringFormatter<'a> {
+impl VariableHolder<String> for StringFormatter<'_> {
     fn get_variables(&self) -> BTreeSet<String> {
         self.variables.keys().cloned().collect()
     }
 }
 
-impl<'a> StyleVariableHolder<String> for StringFormatter<'a> {
+impl StyleVariableHolder<String> for StringFormatter<'_> {
     fn get_style_variables(&self) -> BTreeSet<String> {
         self.style_variables.keys().cloned().collect()
     }
@@ -612,7 +612,7 @@ mod tests {
         let styled_no_modifier_style = Some(Color::Green.normal());
 
         let mut segments: Vec<Segment> = Vec::new();
-        segments.extend(Segment::from_text(None, "styless"));
+        segments.extend(Segment::from_text(None, "styleless"));
         segments.extend(Segment::from_text(styled_style.map(Into::into), "styled"));
         segments.extend(Segment::from_text(
             styled_no_modifier_style.map(Into::into),
@@ -627,7 +627,7 @@ mod tests {
             });
         let result = formatter.parse(None, None).unwrap();
         let mut result_iter = result.iter();
-        match_next!(result_iter, "styless", var_style);
+        match_next!(result_iter, "styleless", var_style);
         match_next!(result_iter, "styled", styled_style);
         match_next!(result_iter, "styled_no_modifier", styled_no_modifier_style);
     }

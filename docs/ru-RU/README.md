@@ -1,12 +1,12 @@
 ---
-layout: home
+layout: дом
 hero:
   image: /logo.svg
   text:
   tagline: Минималистичное, быстрое и бесконечно настраиваемое приглашение командной строки для любой оболочки!
   actions:
     - 
-      theme: brand
+      theme: бренд
       text: Начало работы →
       link: ./guide/
 features:
@@ -136,19 +136,16 @@ onMounted(() => {
 
    #### Elvish
 
-   ::: warning
+   > [!WARNING] Only elvish v0.18 or higher is supported.
 
-   Only elvish v0.18 or higher is supported.
-
-   :::
-
-   Добавьте следующую строку в конец `~/.elvish/rc.elv`:
+   Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
    ```sh
    # ~/.elvish/rc.elv
 
    eval (starship init elvish)
    ```
+   For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 
    #### Tcsh
@@ -164,23 +161,13 @@ onMounted(() => {
 
    #### Nushell
 
-   ::: warning
+   > [!WARNING] This will change in the future. Поддерживается только Nushell v0.96+.
 
-   This will change in the future. Поддерживается только Nushell v0.78+.
-
-   :::
-
-   Add the following to the end of your Nushell env file (find it by running `$nu.env-path` in Nushell):
+   Добавьте следующее в конец вашей конфигурации Nushell (найдите это, запустив `$nu.config-path` в Nushell):
 
    ```sh
-   mkdir ~/.cache/starship
-   starship init nu | save -f ~/.cache/starship/init.nu
-   ```
-
-   And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
-
-   ```sh
-   use ~/.cache/starship/init.nu
+   mkdir ($nu.data-dir | path join "vendor/autoload")
+   starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
    ```
 
 
@@ -197,7 +184,7 @@ onMounted(() => {
 
    #### Cmd
 
-   You need to use [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) with Cmd. Add the following to a file `starship.lua` and place this file in Clink scripts directory:
+   Вам нужно использовать [Clink](https://chrisant996.github.io/clink/clink.html) (v1.2.30+) с помощью Cmd. Добавьте следующий файл `starship.lua` и поместите этот файл в каталог Clink скриптов:
 
    ```lua
    -- starship.lua

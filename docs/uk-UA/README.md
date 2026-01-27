@@ -136,19 +136,16 @@ onMounted(() => {
 
    #### Elvish
 
-   ::: warning
+   > [!WARNING] Підтримується лише elvish v0.18 або новішої версії.
 
-   Підтримуються лише elv0.18 або вище.
-
-   :::
-
-   Додайте наступний рядок наприкінці `~/.elvish/rc.elv`:
+   Додайте наступне до кінця `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` у Windows):
 
    ```sh
    # ~/.elvish/rc.elv
 
    eval (starship init elvish)
    ```
+   Для версії elvish до v0.21.0 файл конфігурації може бути `~/.elvish/rc.elv` натомість
 
 
    #### Tcsh
@@ -164,23 +161,13 @@ onMounted(() => {
 
    #### Nushell
 
-   ::: warning
+   > [!WARNING] У майбутньому це може змінитись. Підтримується лише Nushell v0.96+.
 
-   Це зміниться в майбутньому. Підтримується лише Nushell v0.78+.
-
-   :::
-
-   Додайте наступне в кінець вашого файлу env (його можна знайти за допомогою змінної `$nu.env-path` в Nushell):
+   Додайте наступний рядок наприкінці налаштувань Nushell (знайдіть її за допомоги `$nu.config-path` в Nushell):
 
    ```sh
-   mkdir ~/.cache/starship
-   starship init nu | save -f ~/.cache/starship/init.nu
-   ```
-
-   Додайте наступний рядок наприкінці Вашої конфігурації Nushell (знайдіть її виконавши `$nu.config-path`):
-
-   ```sh
-   use ~/.cache/starship/init.nu
+   mkdir ($nu.data-dir | path join "vendor/autoload")
+   starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
    ```
 
 

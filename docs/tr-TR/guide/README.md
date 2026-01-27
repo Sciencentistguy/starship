@@ -229,10 +229,13 @@ Alternatif olarak aşağıdaki paket yöneticileri ile de Starship'i yükleyebil
 | Alpine Linux 3.13+         | [Alpine Linux Paketleri](https://pkgs.alpinelinux.org/packages?name=starship)                    | `apk add starship`                                                             |
 | Arch Linux                 | [Arch Linux Extra](https://archlinux.org/packages/extra/x86_64/starship)                         | `pacman -S starship`                                                           |
 | CentOS 7+                  | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                    | `dnf copr enable atim/starship` <br /> `dnf install starship` |
+| Debian 13+                 | [Debian Main](https://sources.debian.org/src/starship/1.22.1-1/)                                 | `apt install starship`                                                         |
+| Fedora 40+                 | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                    | `dnf copr enable atim/starship` <br /> `dnf install starship` |
 | Gentoo                     | [Gentoo Paketleri](https://packages.gentoo.org/packages/app-shells/starship)                     | `emerge app-shells/starship`                                                   |
 | Manjaro                    |                                                                                                  | `pacman -S starship`                                                           |
-| NixOS                      | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/misc/starship/default.nix)     | `nix-env -iA nixpkgs.starship`                                                 |
+| NixOS                      | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/st/starship/package.nix)     | `nix-env -iA nixpkgs.starship`                                                 |
 | openSUSE                   | [OSS](https://software.opensuse.org/package/starship)                                            | `zypper in starship`                                                           |
+| Ubuntu 25.04+              | [Ubuntu Universe](https://packages.ubuntu.com/source/plucky/starship)                            | `apt install starship`                                                         |
 | Void Linux                 | [Void Linux Paketleri](https://github.com/void-linux/void-packages/tree/master/srcpkgs/starship) | `xbps-install -S starship`                                                     |
 
 </details>
@@ -303,13 +306,13 @@ load(io.popen('starship init cmd'):read("*a"))()
 <details>
 <summary>Elvish</summary>
 
-`~/.elvish/rc.elv` dosyasının sonuna ekleyin:
+Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
 ```sh
 eval (starship init elvish)
 ```
 
-Not: Elvish v0.18'den sonraki sürümler desteklenmektedir
+Not: Elvish v0.18'den sonraki sürümler desteklenmektedir. For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 </details>
 
@@ -338,20 +341,14 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Nushell env dosyanızın sonuna aşağıdakileri ekleyin (Nushell'de `$nu.env-path` komutunu çalıştırarak bulabilirsiniz):
+Add the following to the end of your Nushell configuration (find it by running `$nu.config-path` in Nushell):
 
 ```sh
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 ```
 
-Aşağıdaki kodu Nushell ayarlarınızın (`$nu.config-path` komutu ile ulaşabilirsiniz) sonuna ekleyin:
-
-```sh
-use ~/.cache/starship/init.nu
-```
-
-Not: Nushell v0.78'tan sonraki sürümler desteklenmektedir
+Not: Nushell v0.96'tan sonraki sürümler desteklenmektedir
 
 </details>
 
@@ -411,7 +408,7 @@ Daha fazla özelleştirme seçeneği için:
 
 ## 🤝 Katkıda Bulunmak
 
-Katılımcılara **yetenek düzeyleri fark etmeksizin**, her zaman açığız! Eğer katkıda bulunmaya kolay bir şekilde başlamak istiyorsanız [good first issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue)'lardan bir tanesini deneyin.
+Katılımcılara **yetenek düzeyleri fark etmeksizin**, her zaman açığız! If you're looking to ease your way into the project, try out a [good first issue](https://github.com/starship/starship/labels/"🌱%20good%20first%20issue").
 
 Eğer ingilizce harici bir dili akıcı seviyede kullanabiliyorsanız, dosyaların diğer diller ile güncel bir şekilde çevirilebilmesi için yardımlarınızı bekliyoruz. Çeviriye [Starship Crowdin](https://translate.starship.rs/)'den destekte bulunabilirsiniz.
 

@@ -4,12 +4,14 @@ mod azure;
 mod buf;
 mod bun;
 mod c;
+mod cc;
 mod character;
 mod cmake;
 mod cmd_duration;
 mod cobol;
 mod conda;
 mod container;
+mod cpp;
 mod crystal;
 pub mod custom;
 mod daml;
@@ -25,6 +27,7 @@ mod env_var;
 mod erlang;
 mod fennel;
 mod fill;
+mod fortran;
 mod fossil_branch;
 mod fossil_metrics;
 mod gcloud;
@@ -32,7 +35,7 @@ mod git_branch;
 mod git_commit;
 mod git_metrics;
 mod git_state;
-mod git_status;
+pub(crate) mod git_status;
 mod gleam;
 mod golang;
 mod gradle;
@@ -41,6 +44,7 @@ mod haskell;
 mod haxe;
 mod helm;
 mod hg_branch;
+mod hg_state;
 mod hostname;
 mod java;
 mod jobs;
@@ -52,8 +56,10 @@ mod localip;
 mod lua;
 mod memory_usage;
 mod meson;
+mod mise;
 mod mojo;
 mod nats;
+mod netns;
 mod nim;
 mod nix_shell;
 mod nodejs;
@@ -66,6 +72,7 @@ mod package;
 mod perl;
 mod php;
 mod pijul_channel;
+mod pixi;
 mod pulumi;
 mod purescript;
 mod python;
@@ -91,6 +98,7 @@ mod utils;
 mod vagrant;
 mod vcsh;
 mod vlang;
+mod xmake;
 mod zig;
 
 #[cfg(feature = "battery")]
@@ -101,7 +109,7 @@ mod typst;
 pub use self::battery::{BatteryInfoProvider, BatteryInfoProviderImpl};
 
 use crate::config::ModuleConfig;
-use crate::context::{Context, Shell};
+use crate::context::{Context, Detected, Shell};
 use crate::module::Module;
 use std::time::Instant;
 
@@ -124,6 +132,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "cobol" => cobol::module(context),
             "conda" => conda::module(context),
             "container" => container::module(context),
+            "cpp" => cpp::module(context),
             "daml" => daml::module(context),
             "dart" => dart::module(context),
             "deno" => deno::module(context),
@@ -137,6 +146,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "env_var" => env_var::module(None, context),
             "fennel" => fennel::module(context),
             "fill" => fill::module(context),
+            "fortran" => fortran::module(context),
             "fossil_branch" => fossil_branch::module(context),
             "fossil_metrics" => fossil_metrics::module(context),
             "gcloud" => gcloud::module(context),
@@ -153,6 +163,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "haxe" => haxe::module(context),
             "helm" => helm::module(context),
             "hg_branch" => hg_branch::module(context),
+            "hg_state" => hg_state::module(context),
             "hostname" => hostname::module(context),
             "java" => java::module(context),
             "jobs" => jobs::module(context),
@@ -164,8 +175,10 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "lua" => lua::module(context),
             "memory_usage" => memory_usage::module(context),
             "meson" => meson::module(context),
+            "mise" => mise::module(context),
             "mojo" => mojo::module(context),
             "nats" => nats::module(context),
+            "netns" => netns::module(context),
             "nim" => nim::module(context),
             "nix_shell" => nix_shell::module(context),
             "nodejs" => nodejs::module(context),
@@ -178,6 +191,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "perl" => perl::module(context),
             "php" => php::module(context),
             "pijul_channel" => pijul_channel::module(context),
+            "pixi" => pixi::module(context),
             "pulumi" => pulumi::module(context),
             "purescript" => purescript::module(context),
             "python" => python::module(context),
@@ -204,6 +218,7 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
             "vlang" => vlang::module(context),
             "vagrant" => vagrant::module(context),
             "vcsh" => vcsh::module(context),
+            "xmake" => xmake::module(context),
             "zig" => zig::module(context),
             env if env.starts_with("env_var.") => {
                 env_var::module(env.strip_prefix("env_var."), context)
@@ -213,14 +228,16 @@ pub fn handle<'a>(module: &str, context: &'a Context) -> Option<Module<'a>> {
                 custom::module(custom.strip_prefix("custom.").unwrap(), context)
             }
             _ => {
-                eprintln!("Error: Unknown module {module}. Use starship module --list to list out all supported modules.");
+                eprintln!(
+                    "Error: Unknown module {module}. Use starship module --list to list out all supported modules."
+                );
                 None
             }
         }
     };
 
     let elapsed = start.elapsed();
-    log::trace!("Took {:?} to compute module {:?}", elapsed, module);
+    log::trace!("Took {elapsed:?} to compute module {module:?}");
     if elapsed.as_millis() >= 1 {
         // If we take less than 1ms to compute a None, then we will not return a module at all
         // if we have a module: default duration is 0 so no need to change it
@@ -247,6 +264,7 @@ pub fn description(module: &str) -> &'static str {
         "cobol" => "The currently installed version of COBOL/GNUCOBOL",
         "conda" => "The current conda environment, if $CONDA_DEFAULT_ENV is set",
         "container" => "The container indicator, if inside a container.",
+        "cpp" => "your cpp compiler type",
         "crystal" => "The currently installed version of Crystal",
         "daml" => "The Daml SDK version of your project",
         "dart" => "The currently installed version of Dart",
@@ -260,6 +278,7 @@ pub fn description(module: &str) -> &'static str {
         "erlang" => "Current OTP version",
         "fennel" => "The currently installed version of Fennel",
         "fill" => "Fills the remaining space on the line with a pad string",
+        "fortran" => "The currently used version of Fortran",
         "fossil_branch" => "The active branch of the check-out in your current directory",
         "fossil_metrics" => "The currently added/deleted lines in your check-out",
         "gcloud" => "The current GCP client configuration",
@@ -276,6 +295,7 @@ pub fn description(module: &str) -> &'static str {
         "haxe" => "The currently installed version of Haxe",
         "helm" => "The currently installed version of Helm",
         "hg_branch" => "The active branch and topic of the repo in your current directory",
+        "hg_state" => "The current hg operation",
         "hostname" => "The system hostname",
         "java" => "The currently installed version of Java",
         "jobs" => "The current number of jobs running",
@@ -289,8 +309,10 @@ pub fn description(module: &str) -> &'static str {
         "meson" => {
             "The current Meson environment, if $MESON_DEVENV and $MESON_PROJECT_NAME are set"
         }
+        "mise" => "The current mise status",
         "mojo" => "The currently installed version of Mojo",
         "nats" => "The current NATS context",
+        "netns" => "The current network namespace",
         "nim" => "The currently installed version of Nim",
         "nix_shell" => "The nix-shell environment",
         "nodejs" => "The currently installed version of NodeJS",
@@ -303,6 +325,9 @@ pub fn description(module: &str) -> &'static str {
         "perl" => "The currently installed version of Perl",
         "php" => "The currently installed version of PHP",
         "pijul_channel" => "The current channel of the repo in the current directory",
+        "pixi" => {
+            "The currently installed version of Pixi, and the active environment if $PIXI_ENVIRONMENT_NAME is set"
+        }
         "pulumi" => "The current username, stack, and installed version of Pulumi",
         "purescript" => "The currently installed version of PureScript",
         "python" => "The currently installed version of Python",
@@ -328,6 +353,7 @@ pub fn description(module: &str) -> &'static str {
         "vagrant" => "The currently installed version of Vagrant",
         "vcsh" => "The currently active VCSH repository",
         "vlang" => "The currently installed version of V",
+        "xmake" => "The currently installed version of XMake",
         "zig" => "The currently installed version of Zig",
         _ => "<no description>",
     }

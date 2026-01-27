@@ -225,10 +225,13 @@ Alternatively, install Starship using any of the following package managers:
 | Alpine Linux 3.13+ | [Alpine Linux Packages](https://pkgs.alpinelinux.org/packages?name=starship)                    | `apk add starship`                                                             |
 | Arch Linux         | [Arch Linux Extra](https://archlinux.org/packages/extra/x86_64/starship)                        | `pacman -S starship`                                                           |
 | CentOS 7+          | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                   | `dnf copr enable atim/starship` <br /> `dnf install starship` |
+| Debian 13+         | [Debian Main](https://sources.debian.org/src/starship/1.22.1-1/)                                | `apt install starship`                                                         |
+| Fedora 40+         | [Copr](https://copr.fedorainfracloud.org/coprs/atim/starship)                                   | `dnf copr enable atim/starship` <br /> `dnf install starship` |
 | Gentoo             | [Gentoo Packages](https://packages.gentoo.org/packages/app-shells/starship)                     | `emerge app-shells/starship`                                                   |
 | Manjaro            |                                                                                                 | `pacman -S starship`                                                           |
-| NixOS              | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/tools/misc/starship/default.nix)    | `nix-env -iA nixpkgs.starship`                                                 |
+| NixOS              | [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/st/starship/package.nix)    | `nix-env -iA nixpkgs.starship`                                                 |
 | openSUSE           | [OSS](https://software.opensuse.org/package/starship)                                           | `zypper in starship`                                                           |
+| Ubuntu 25.04+      | [Ubuntu Universe](https://packages.ubuntu.com/source/plucky/starship)                           | `apt install starship`                                                         |
 | Void Linux         | [Void Linux Packages](https://github.com/void-linux/void-packages/tree/master/srcpkgs/starship) | `xbps-install -S starship`                                                     |
 
 </details>
@@ -299,13 +302,13 @@ load(io.popen('starship init cmd'):read("*a"))()
 <details>
 <summary>Elvish</summary>
 
-ئەمەی خوارەوە زیادبکە لە کۆتایی `~/.elvish/rc.elv`:
+Add the following to the end of `~/.config/elvish/rc.elv` (`%AppData%\elvish\rc.elv` on Windows):
 
 ```sh
 eval (starship init elvish)
 ```
 
-Note: Only Elvish v0.18+ is supported
+Note: Only Elvish v0.18+ is supported. For elvish versions prior to v0.21.0 the config file might instead be `~/.elvish/rc.elv`
 
 </details>
 
@@ -334,20 +337,14 @@ eval $(starship init ion)
 <details>
 <summary>Nushell</summary>
 
-Add the following to the end of your Nushell env file (find it by running `$nu.env-path` in Nushell):
+Add the following to the end of your Nushell configuration (find it by running `$nu.config-path` in Nushell):
 
 ```sh
-mkdir ~/.cache/starship
-starship init nu | save -f ~/.cache/starship/init.nu
+mkdir ($nu.data-dir | path join "vendor/autoload")
+starship init nu | save -f ($nu.data-dir | path join "vendor/autoload/starship.nu")
 ```
 
-And add the following to the end of your Nushell configuration (find it by running `$nu.config-path`):
-
-```sh
-use ~/.cache/starship/init.nu
-```
-
-Note: Only Nushell v0.78+ is supported
+Note: Only Nushell v0.96+ is supported
 
 </details>
 
@@ -407,7 +404,7 @@ If you're looking to further customize Starship:
 
 ## 🤝 بەژداریکردن
 
-ئێمە هەموو کات ئەگەڕێین بۆ بەژداریکەرێک لە هەر **ئاست و توانایەکدا بێت**! ئەگەر بەدوای ئەوەوەی کە بێیتە ئەم پڕۆژەیەوە [good first issue](https://github.com/starship/starship/labels/🌱%20good%20first%20issue) تاقیبکەرەوە.
+ئێمە هەموو کات ئەگەڕێین بۆ بەژداریکەرێک لە هەر **ئاست و توانایەکدا بێت**! If you're looking to ease your way into the project, try out a [good first issue](https://github.com/starship/starship/labels/"🌱%20good%20first%20issue").
 
 ئەگەر پاراویت لە زمانێک جگە لە ئینگلیزی، ئێمە زۆر خۆشحاڵدەبین بە هەر یارمەتییەک کە بەڵگەنامەکانمان بە وەرگێڕدراوی بهێڵێتەوە و نوێکراوی بهێڵێتەوە بە زمانەکانی دیکە. ئەگەر نیازت هەیە یارمەتی بدەیت، ئەتوانی بەژداری لە وەرگێڕاندا بکەیت لەسەر [Starship Crowdin](https://translate.starship.rs/).
 

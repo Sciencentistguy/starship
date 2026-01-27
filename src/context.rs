@@ -2,15 +2,16 @@ use crate::config::{ModuleConfig, StarshipConfig};
 use crate::configs::StarshipRootConfig;
 use crate::context_env::Env;
 use crate::module::Module;
-use crate::utils::{create_command, exec_timeout, read_file, CommandOutput, PathExt};
+use crate::utils::{CommandOutput, PathExt, create_command, exec_timeout, read_file};
 
 use crate::modules;
 use crate::utils;
 use clap::Parser;
 use gix::{
+    Repository, ThreadSafeRepository,
     repository::Kind,
     sec::{self as git_sec, trust::DefaultForLevel},
-    state as git_state, Repository, ThreadSafeRepository,
+    state as git_state,
 };
 #[cfg(test)]
 use std::collections::HashMap;
@@ -24,7 +25,8 @@ use std::num::ParseIntError;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 use std::string::String;
-use std::sync::OnceLock;
+use std::sync::{Arc, OnceLock, mpsc};
+use std::thread;
 use std::time::{Duration, Instant};
 use terminal_size::terminal_size;
 
@@ -108,7 +110,7 @@ impl<'a> Context<'a> {
             .or_else(|| env::var("PWD").map(PathBuf::from).ok())
             .unwrap_or_else(|| path.clone());
 
-        Context::new_with_shell_and_path(
+        Self::new_with_shell_and_path(
             arguments,
             shell,
             target,
@@ -127,14 +129,14 @@ impl<'a> Context<'a> {
         logical_path: PathBuf,
         env: Env<'a>,
     ) -> Self {
-        let config = StarshipConfig::initialize(&get_config_path_os(&env));
+        let config = StarshipConfig::initialize(get_config_path_os(&env).as_deref());
 
         // If the vector is zero-length, we should pretend that we didn't get a
         // pipestatus at all (since this is the input `--pipestatus=""`)
         if properties
             .pipestatus
             .as_deref()
-            .map_or(false, |p| p.len() == 1 && p[0].is_empty())
+            .is_some_and(|p| p.len() == 1 && p[0].is_empty())
         {
             properties.pipestatus = None;
         }
@@ -161,7 +163,7 @@ impl<'a> Context<'a> {
 
         let width = properties.terminal_width;
 
-        Context {
+        Self {
             config,
             properties,
             current_dir,
@@ -219,7 +221,7 @@ impl<'a> Context<'a> {
     }
 
     /// Create a new module
-    pub fn new_module(&self, name: &str) -> Module {
+    pub fn new_module(&self, name: &str) -> Module<'_> {
         let config = self.config.get_module_config(name);
         let desc = modules::description(name);
 
@@ -264,6 +266,28 @@ impl<'a> Context<'a> {
         iter.peek().is_none() || iter.any(|env_var| self.get_env(env_var).is_some())
     }
 
+    /// Returns an enum indicating if `detect_env_vars` contains negated or non-negated variables
+    pub fn detect_env_vars2(&'a self, env_vars: &'a [&'a str]) -> Detected {
+        if env_vars.is_empty() {
+            return Detected::Empty;
+        }
+
+        if self.has_negated_env_var(env_vars) {
+            return Detected::Negated;
+        }
+
+        let mut iter = env_vars
+            .iter()
+            .filter(|env_var| !env_var.starts_with('!'))
+            .peekable();
+
+        if iter.any(|env_var| self.get_env(env_var).is_some()) {
+            Detected::Yes
+        } else {
+            Detected::No
+        }
+    }
+
     // returns a new ScanDir struct with reference to current dir_files of context
     // see ScanDir for methods
     pub fn try_begin_scan(&'a self) -> Option<ScanDir<'a>> {
@@ -293,12 +317,13 @@ impl<'a> Context<'a> {
                 let mut git_open_opts_map =
                     git_sec::trust::Mapping::<gix::open::Options>::default();
 
-                // don't use the global git configs
+                // Load all the configuration as it affects aspects of the
+                // `git_status` and `git_metrics` modules.
                 let config = gix::open::permissions::Config {
-                    git_binary: false,
-                    system: false,
-                    git: false,
-                    user: false,
+                    git_binary: true,
+                    system: true,
+                    git: true,
+                    user: true,
                     env: true,
                     includes: true,
                 };
@@ -351,7 +376,7 @@ impl<'a> Context<'a> {
                 Ok(Repo {
                     repo: shared_repo,
                     branch: branch.map(|b| b.shorten().to_string()),
-                    workdir: repository.work_dir().map(PathBuf::from),
+                    workdir: repository.workdir().map(PathBuf::from),
                     path,
                     state: repository.state(),
                     remote,
@@ -409,11 +434,7 @@ impl<'a> Context<'a> {
         cmd: T,
         args: &[U],
     ) -> Option<CommandOutput> {
-        log::trace!(
-            "Executing command {:?} with args {:?} from context",
-            cmd,
-            args
-        );
+        log::trace!("Executing command {cmd:?} with args {args:?} from context");
         #[cfg(test)]
         {
             let command = crate::utils::display_command(&cmd, args);
@@ -435,7 +456,7 @@ impl<'a> Context<'a> {
     }
 
     /// Attempt to execute several commands with `exec_cmd`, return the results of the first that works
-    pub fn exec_cmds_return_first(&self, commands: Vec<Vec<&str>>) -> Option<CommandOutput> {
+    pub fn exec_cmds_return_first(&self, commands: &[Vec<&str>]) -> Option<CommandOutput> {
         commands
             .iter()
             .find_map(|attempt| self.exec_cmd(attempt[0], &attempt[1..]))
@@ -460,15 +481,27 @@ impl<'a> Context<'a> {
 
 impl Default for Context<'_> {
     fn default() -> Self {
-        Context::new(Default::default(), Target::Main)
+        Self::new(Default::default(), Target::Main)
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum Detected {
+    /// `detect_env_vars` was empty.
+    Empty,
+    /// A negated variable was found.
+    Negated,
+    /// A non-negated variable was found.
+    Yes,
+    /// No non-negated variables were found.
+    No,
+}
+
 fn home_dir(env: &Env) -> Option<PathBuf> {
-    if cfg!(test) {
-        if let Some(home) = env.get_env("HOME") {
-            return Some(PathBuf::from(home));
-        }
+    if cfg!(test)
+        && let Some(home) = env.get_env("HOME")
+    {
+        return Some(PathBuf::from(home));
     }
     utils::home_dir()
 }
@@ -503,61 +536,103 @@ impl DirContents {
         timeout: Duration,
         follow_symlinks: bool,
     ) -> Result<Self, std::io::Error> {
+        let _ = fs::read_dir(base)?; // Early return if invalid base
+
         let start = Instant::now();
+        let mut remaining_time = timeout;
 
         let mut folders: HashSet<PathBuf> = HashSet::new();
         let mut files: HashSet<PathBuf> = HashSet::new();
         let mut file_names: HashSet<String> = HashSet::new();
         let mut extensions: HashSet<String> = HashSet::new();
 
-        fs::read_dir(base)?
-            .enumerate()
-            .take_while(|(n, _)| {
-                cfg!(test) // ignore timeout during tests
-                || n & 0xFF != 0 // only check timeout once every 2^8 entries
-                || start.elapsed() < timeout
-            })
-            .filter_map(|(_, entry)| entry.ok())
-            .for_each(|entry| {
-                let path = PathBuf::from(entry.path().strip_prefix(base).unwrap());
+        let base_path = base;
+        let base = Arc::from(base);
+        let (tx, rx) = mpsc::channel();
 
-                let is_dir = match follow_symlinks {
-                    true => entry.path().is_dir(),
-                    false => fs::symlink_metadata(entry.path())
-                        .map(|m| m.is_dir())
-                        .unwrap_or(false),
-                };
+        {
+            let worker = move || {
+                let dir_iter = fs::read_dir(base).unwrap();
+                let _ = dir_iter
+                    .filter_map(|entry| entry.ok())
+                    .try_for_each(|entry| tx.send(entry));
+            };
 
-                if is_dir {
-                    folders.insert(path);
-                } else {
-                    if !path.to_string_lossy().starts_with('.') {
-                        // Extract the file extensions (yes, that's plural) from a filename.
-                        // Why plural? Consider the case of foo.tar.gz. It's a compressed
-                        // tarball (tar.gz), and it's a gzipped file (gz). We should be able
-                        // to match both.
+            let _ = thread::Builder::new()
+                .name("from_path_with_timeout worker".into())
+                .spawn(worker)?;
+        }
 
-                        // find the minimal extension on a file. ie, the gz in foo.tar.gz
-                        // NB the .to_string_lossy().to_string() here looks weird but is
-                        // required to convert it from a Cow.
-                        path.extension()
-                            .map(|ext| extensions.insert(ext.to_string_lossy().to_string()));
+        loop {
+            // TODO: use `recv_deadline` instead once stable
+            let msg = if cfg!(test) {
+                // recv() errors out only when the corresponding sender closes.
+                // See mpsc::RecvError.
+                rx.recv().map_err(|_| mpsc::RecvTimeoutError::Disconnected)
+            } else {
+                rx.recv_timeout(remaining_time)
+            };
+            match msg {
+                Ok(entry) => {
+                    let path = PathBuf::from(entry.path().strip_prefix(base_path).unwrap());
 
-                        // find the full extension on a file. ie, the tar.gz in foo.tar.gz
-                        path.file_name().map(|file_name| {
-                            file_name
-                                .to_string_lossy()
-                                .split_once('.')
-                                .map(|(_, after)| extensions.insert(after.to_string()))
-                        });
+                    let is_dir = match follow_symlinks {
+                        true => entry.path().is_dir(),
+                        false => fs::symlink_metadata(entry.path())
+                            .map(|m| m.is_dir())
+                            .unwrap_or(false),
+                    };
+
+                    if is_dir {
+                        folders.insert(path);
+                    } else {
+                        if !path.to_string_lossy().starts_with('.') {
+                            // Extract the file extensions (yes, that's plural) from a filename.
+                            // Why plural? Consider the case of foo.tar.gz. It's a compressed
+                            // tarball (tar.gz), and it's a gzipped file (gz). We should be able
+                            // to match both.
+
+                            // find the minimal extension on a file. ie, the gz in foo.tar.gz
+                            // NB the .to_string_lossy().to_string() here looks weird but is
+                            // required to convert it from a Cow.
+                            path.extension()
+                                .map(|ext| extensions.insert(ext.to_string_lossy().to_string()));
+
+                            // find the full extension on a file. ie, the tar.gz in foo.tar.gz
+                            path.file_name().map(|file_name| {
+                                file_name
+                                    .to_string_lossy()
+                                    .split_once('.')
+                                    .map(|(_, after)| extensions.insert(after.to_string()))
+                            });
+                        }
+                        if let Some(file_name) = path.file_name() {
+                            // this .to_string_lossy().to_string() is also required
+                            file_names.insert(file_name.to_string_lossy().to_string());
+                        }
+                        files.insert(path);
                     }
-                    if let Some(file_name) = path.file_name() {
-                        // this .to_string_lossy().to_string() is also required
-                        file_names.insert(file_name.to_string_lossy().to_string());
+
+                    if remaining_time <= Duration::from_millis(0) && rx.try_recv().is_err() {
+                        // Timed-out, and rx has been drained.
+                        log::warn!("Scanning current directory timed out.");
+                        log::warn!(
+                            "You can set scan_timeout in your config to a higher value to allow longer-running scans to keep executing."
+                        );
+                        break;
                     }
-                    files.insert(path);
+
+                    // recv_deadline is nightly: calculate the remaining time instead.
+                    // after loop break to give chance to drain rx
+                    remaining_time =
+                        timeout.saturating_sub(Instant::now().saturating_duration_since(start));
                 }
-            });
+                Err(_) => {
+                    // Timeout or Disconnected occurred
+                    break;
+                }
+            }
+        }
 
         log::trace!(
             "Building HashSets of directory files, folders and extensions took {:?}",
@@ -651,7 +726,7 @@ pub struct Repo {
 
     /// Contains `true` if the value of `core.fsmonitor` is set to `true`.
     /// If not `true`, `fsmonitor` is explicitly disabled in git commands.
-    fs_monitor_value_is_true: bool,
+    pub(crate) fs_monitor_value_is_true: bool,
 
     // Kind of repository, work tree or bare
     pub kind: Kind,
@@ -670,7 +745,7 @@ impl Repo {
     pub fn exec_git<T: AsRef<OsStr> + Debug>(
         &self,
         context: &Context,
-        git_args: &[T],
+        git_args: impl IntoIterator<Item = T>,
     ) -> Option<CommandOutput> {
         let mut command = create_command("git").ok()?;
 
@@ -696,7 +771,7 @@ impl Repo {
         }
 
         command.args(git_args);
-        log::trace!("Executing git command: {:?}", command);
+        log::trace!("Executing git command: {command:?}");
 
         exec_timeout(
             &mut command,
@@ -780,19 +855,53 @@ impl<'a> ScanAncestors<'a> {
     /// files or folders is found.
     ///
     /// The scan does not cross device boundaries.
-    pub fn scan(&self) -> Option<&'a Path> {
-        let initial_device_id = self.path.device_id();
-        for dir in self.path.ancestors() {
-            if initial_device_id != dir.device_id() {
+    pub fn scan(&self) -> Option<PathBuf> {
+        let path = self.path;
+        let initial_device_id = path.device_id();
+
+        // We want to avoid reallocations during the search so we pre-allocate a buffer with enough
+        // capacity to hold the longest path + any marker (we could find the length of the longest
+        // marker programmatically but that would actually cost more than preallocating a few bytes too many).
+        let mut buf = PathBuf::with_capacity(path.as_os_str().len() + 15);
+        path.clone_into(&mut buf);
+
+        loop {
+            if initial_device_id != buf.device_id() {
                 break;
             }
 
-            if self.files.iter().any(|name| dir.join(name).is_file())
-                || self.folders.iter().any(|name| dir.join(name).is_dir())
-            {
-                return Some(dir);
+            for file in self.files {
+                // Then for each file, we look for `buf/file`
+                buf.push(file);
+
+                if buf.is_file() {
+                    buf.pop();
+                    return Some(buf);
+                }
+
+                // Removing the last pushed item means removing `file`, to replace it with either
+                // the next `file` or the first `folder`, if any
+                buf.pop();
+            }
+
+            for folder in self.folders {
+                // Then for each folder, we look for `buf/folder`
+                buf.push(folder);
+
+                if buf.is_dir() {
+                    buf.pop();
+                    return Some(buf);
+                }
+
+                buf.pop();
+            }
+
+            // Then we go up one level until there is no more level to go up with
+            if !buf.pop() {
+                break;
             }
         }
+
         None
     }
 }
@@ -868,8 +977,11 @@ pub struct Properties {
     #[clap(short = 'k', long, default_value = "viins")]
     pub keymap: String,
     /// The number of currently running jobs
-    #[clap(short, long, default_value_t, value_parser=parse_jobs)]
+    #[clap(short, long, default_value_t, value_parser=parse_i64)]
     pub jobs: i64,
+    /// The current value of SHLVL, for shells that mis-handle it in $()
+    #[clap(long, value_parser=parse_i64)]
+    pub shlvl: Option<i64>,
 }
 
 impl Default for Properties {
@@ -883,6 +995,7 @@ impl Default for Properties {
             cmd_duration: None,
             keymap: "viins".to_string(),
             jobs: 0,
+            shlvl: None,
         }
     }
 }
@@ -896,8 +1009,8 @@ fn parse_trim<F: FromStr>(value: &str) -> Option<Result<F, F::Err>> {
     Some(F::from_str(value))
 }
 
-fn parse_jobs(jobs: &str) -> Result<i64, ParseIntError> {
-    parse_trim(jobs).unwrap_or(Ok(0))
+fn parse_i64(value: &str) -> Result<i64, ParseIntError> {
+    parse_trim(value).unwrap_or(Ok(0))
 }
 
 fn default_width() -> usize {
@@ -941,39 +1054,47 @@ mod tests {
 
         let dc_following_symlinks = DirContents::from_path(d.path(), true)?;
 
-        assert!(ScanDir {
-            dir_contents: &dc_following_symlinks,
-            files: &["link_to_file"],
-            extensions: &[],
-            folders: &[],
-        }
-        .is_match());
+        assert!(
+            ScanDir {
+                dir_contents: &dc_following_symlinks,
+                files: &["link_to_file"],
+                extensions: &[],
+                folders: &[],
+            }
+            .is_match()
+        );
 
-        assert!(ScanDir {
-            dir_contents: &dc_following_symlinks,
-            files: &[],
-            extensions: &[],
-            folders: &["link_to_folder"],
-        }
-        .is_match());
+        assert!(
+            ScanDir {
+                dir_contents: &dc_following_symlinks,
+                files: &[],
+                extensions: &[],
+                folders: &["link_to_folder"],
+            }
+            .is_match()
+        );
 
         let dc_not_following_symlinks = DirContents::from_path(d.path(), false)?;
 
-        assert!(ScanDir {
-            dir_contents: &dc_not_following_symlinks,
-            files: &["link_to_file"],
-            extensions: &[],
-            folders: &[],
-        }
-        .is_match());
+        assert!(
+            ScanDir {
+                dir_contents: &dc_not_following_symlinks,
+                files: &["link_to_file"],
+                extensions: &[],
+                folders: &[],
+            }
+            .is_match()
+        );
 
-        assert!(!ScanDir {
-            dir_contents: &dc_not_following_symlinks,
-            files: &[],
-            extensions: &[],
-            folders: &["link_to_folder"],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &dc_not_following_symlinks,
+                files: &[],
+                extensions: &[],
+                folders: &["link_to_folder"],
+            }
+            .is_match()
+        );
 
         Ok(())
     }
@@ -984,92 +1105,142 @@ mod tests {
         let follow_symlinks = true;
         let empty_dc = DirContents::from_path(empty.path(), follow_symlinks)?;
 
-        assert!(!ScanDir {
-            dir_contents: &empty_dc,
-            files: &["package.json"],
-            extensions: &["js"],
-            folders: &["node_modules"],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &empty_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
         empty.close()?;
 
         let rust = testdir(&["README.md", "Cargo.toml", "src/main.rs"])?;
         let rust_dc = DirContents::from_path(rust.path(), follow_symlinks)?;
-        assert!(!ScanDir {
-            dir_contents: &rust_dc,
-            files: &["package.json"],
-            extensions: &["js"],
-            folders: &["node_modules"],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &rust_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
         rust.close()?;
 
         let java = testdir(&["README.md", "src/com/test/Main.java", "pom.xml"])?;
         let java_dc = DirContents::from_path(java.path(), follow_symlinks)?;
-        assert!(!ScanDir {
-            dir_contents: &java_dc,
-            files: &["package.json"],
-            extensions: &["js"],
-            folders: &["node_modules"],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &java_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
         java.close()?;
 
         let node = testdir(&["README.md", "node_modules/lodash/main.js", "package.json"])?;
         let node_dc = DirContents::from_path(node.path(), follow_symlinks)?;
-        assert!(ScanDir {
-            dir_contents: &node_dc,
-            files: &["package.json"],
-            extensions: &["js"],
-            folders: &["node_modules"],
-        }
-        .is_match());
+        assert!(
+            ScanDir {
+                dir_contents: &node_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
         node.close()?;
 
         let tarballs = testdir(&["foo.tgz", "foo.tar.gz"])?;
         let tarballs_dc = DirContents::from_path(tarballs.path(), follow_symlinks)?;
-        assert!(ScanDir {
-            dir_contents: &tarballs_dc,
-            files: &[],
-            extensions: &["tar.gz"],
-            folders: &[],
-        }
-        .is_match());
+        assert!(
+            ScanDir {
+                dir_contents: &tarballs_dc,
+                files: &[],
+                extensions: &["tar.gz"],
+                folders: &[],
+            }
+            .is_match()
+        );
         tarballs.close()?;
 
         let dont_match_ext = testdir(&["foo.js", "foo.ts"])?;
         let dont_match_ext_dc = DirContents::from_path(dont_match_ext.path(), follow_symlinks)?;
-        assert!(!ScanDir {
-            dir_contents: &dont_match_ext_dc,
-            files: &[],
-            extensions: &["js", "!notfound", "!ts"],
-            folders: &[],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &dont_match_ext_dc,
+                files: &[],
+                extensions: &["js", "!notfound", "!ts"],
+                folders: &[],
+            }
+            .is_match()
+        );
         dont_match_ext.close()?;
 
         let dont_match_file = testdir(&["goodfile", "evilfile"])?;
         let dont_match_file_dc = DirContents::from_path(dont_match_file.path(), follow_symlinks)?;
-        assert!(!ScanDir {
-            dir_contents: &dont_match_file_dc,
-            files: &["goodfile", "!notfound", "!evilfile"],
-            extensions: &[],
-            folders: &[],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &dont_match_file_dc,
+                files: &["goodfile", "!notfound", "!evilfile"],
+                extensions: &[],
+                folders: &[],
+            }
+            .is_match()
+        );
         dont_match_file.close()?;
 
         let dont_match_folder = testdir(&["gooddir/somefile", "evildir/somefile"])?;
         let dont_match_folder_dc =
             DirContents::from_path(dont_match_folder.path(), follow_symlinks)?;
-        assert!(!ScanDir {
-            dir_contents: &dont_match_folder_dc,
-            files: &[],
-            extensions: &[],
-            folders: &["gooddir", "!notfound", "!evildir"],
-        }
-        .is_match());
+        assert!(
+            !ScanDir {
+                dir_contents: &dont_match_folder_dc,
+                files: &[],
+                extensions: &[],
+                folders: &["gooddir", "!notfound", "!evildir"],
+            }
+            .is_match()
+        );
         dont_match_folder.close()?;
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_scan_dir_timeout() -> io::Result<()> {
+        let empty = testdir(&[])?;
+        let follow_symlinks = true;
+        let timeout = Duration::new(0, 0);
+        let empty_dc = DirContents::from_path_with_timeout(empty.path(), timeout, follow_symlinks)?;
+
+        assert!(
+            !ScanDir {
+                dir_contents: &empty_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
+        empty.close()?;
+
+        let rust = testdir(&["README.md", "Cargo.toml", "src/main.rs"])?;
+        let rust_dc = DirContents::from_path_with_timeout(rust.path(), timeout, follow_symlinks)?;
+        assert!(
+            !ScanDir {
+                dir_contents: &rust_dc,
+                files: &["package.json"],
+                extensions: &["js"],
+                folders: &["node_modules"],
+            }
+            .is_match()
+        );
+        rust.close()?;
 
         Ok(())
     }
@@ -1093,12 +1264,12 @@ mod tests {
         // Mock navigation into the symlink path
         let test_path = path_symlink.join("yyy");
         let context = Context::new_with_shell_and_path(
-            Default::default(),
+            Properties::default(),
             Shell::Unknown,
             Target::Main,
             test_path.clone(),
             test_path.clone(),
-            Default::default(),
+            Env::default(),
         );
 
         assert_ne!(context.current_dir, context.logical_dir);
@@ -1118,12 +1289,12 @@ mod tests {
         // Mock navigation to a directory which does not exist on disk
         let test_path = Path::new("/path_which_does_not_exist").to_path_buf();
         let context = Context::new_with_shell_and_path(
-            Default::default(),
+            Properties::default(),
             Shell::Unknown,
             Target::Main,
             test_path.clone(),
             test_path.clone(),
-            Default::default(),
+            Env::default(),
         );
 
         let expected_current_dir = &test_path;
@@ -1140,12 +1311,12 @@ mod tests {
         // Mock navigation to a directory which does not exist on disk
         let test_path = Path::new("~/path_which_does_not_exist").to_path_buf();
         let context = Context::new_with_shell_and_path(
-            Default::default(),
+            Properties::default(),
             Shell::Unknown,
             Target::Main,
             test_path.clone(),
             test_path.clone(),
-            Default::default(),
+            Env::default(),
         );
 
         let expected_current_dir = home_dir()

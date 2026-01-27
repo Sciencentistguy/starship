@@ -14,11 +14,7 @@ Ten zestaw ustawień zmienia symbole dla każdego modułu tak, by wykorzystywał
 
 To ustawienie zmienia symbole dla kilku modułów, tak aby żadne symbole Nerd Font nie były używane w wierszu poleceń.
 
-::: porada
-
-To ustawienie stanie się domyślnym ustawieniem [w przyszłej wersji starship](https://github.com/starship/starship/pull/3544).
-
-:::
+> [!TIP] This preset will become the default preset [in a future release of starship](https://github.com/starship/starship/pull/3544).
 
 [Kliknij, aby wyświetlić ustawienia No Nerd Font](./no-nerd-font)
 
@@ -75,3 +71,9 @@ Zestaw mocno inspirowany przez [Pastel Powerline](./pastel-powerline.md) i [Toky
 This is a pseudo minimalist preset inspired by the [geometry](https://github.com/geometry-zsh/geometry) and [spaceship](https://github.com/spaceship-prompt/spaceship-prompt) prompts.
 
 [![Screenshot of Jetpack preset](/presets/img/jetpack.png "Click to view Jetpack preset")](./jetpack)
+
+## [Catppuccin Powerline](./catppuccin-powerline.md)
+
+This preset is a minimally modified version of [Gruvbox Rainbow](./gruvbox-rainbow.md) using the [Catppuccin](https://github.com/catppuccin/catppuccin) theme palette.
+
+[![Screenshot of Catppuccin Powerline preset](/presets/img/catppuccin-powerline.png "Click to view Catppuccin Powerline preset")](./catppuccin-powerline)
